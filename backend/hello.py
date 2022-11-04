@@ -1,5 +1,8 @@
-import requests
 import json
+import requests
+import mysql.connector
+
+a = mysql.connector
 
 
 def getLeetcodeInformation(username: str) -> dict:
@@ -44,4 +47,7 @@ def getLeetcodeInformation(username: str) -> dict:
     return result
 
 
-print(getLeetcodeInformation("shenghaowu"))
+def main(dict):
+    if 'username' in dict:
+        username = dict['username']
+    return getLeetcodeInformation(username)

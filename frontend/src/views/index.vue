@@ -17,33 +17,43 @@
     <el-button style="float: right; margin-top: 14px" @click="signOut">
       Sign Out</el-button
     >
+
+    <el-main>
+      <router-view></router-view>
+    </el-main>
   </el-header>
 
   <el-row class="tac">
     <el-aside style="width: 160px">
       <el-col>
-        <el-menu :collapse="menuCollapsed" class="el-menu-vertical-demo">
-          <el-menu-item index="1">
+        <el-menu
+          default-active="ranking"
+          :collapse="menuCollapsed"
+          class="el-menu-vertical"
+          id="el-menu"
+          router
+        >
+          <el-menu-item index="ranking">
             <el-icon><DataAnalysis /></el-icon>
             <span>Ranking</span>
           </el-menu-item>
-          <el-menu-item index="2">
+          <el-menu-item index="following">
             <el-icon><View /></el-icon>
             <span>Following</span>
           </el-menu-item>
-          <el-menu-item index="3">
+          <el-menu-item index="problems">
             <el-icon><Collection /></el-icon>
             <span>Problems</span>
           </el-menu-item>
-          <el-menu-item index="4">
+          <el-menu-item index="user">
             <el-icon><User /></el-icon>
             <span>User</span>
           </el-menu-item>
-          <el-menu-item index="5">
+          <el-menu-item index="discussion">
             <el-icon><ChatDotSquare /></el-icon>
             <span>Discussion</span>
           </el-menu-item>
-          <el-menu-item index="6">
+          <el-menu-item index="settings">
             <el-icon><Setting /></el-icon>
             <span>Settings</span>
           </el-menu-item>
@@ -51,10 +61,6 @@
       </el-col>
     </el-aside>
   </el-row>
-
-  <el-main>
-    <router-view></router-view>
-  </el-main>
 </template>
 
 <script lang="ts">
@@ -79,3 +85,9 @@ export default {
 <script lang="ts" setup>
 import { Menu } from "@element-plus/icons-vue";
 </script>
+
+<style scoped>
+a {
+  text-decoration: none !important;
+}
+</style>

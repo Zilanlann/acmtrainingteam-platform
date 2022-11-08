@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
 import Index from "@/views/Index.vue";
+import SignIn from "@/components/SignIn.vue";
 import Ranking from "@/components/Ranking.vue";
 import Discussion from "@/components/Discussion.vue";
 import Following from "@/components/Following.vue";
@@ -10,8 +11,13 @@ import User from "@/components/User.vue";
 const routes: Array<RouteRecordRaw> = [
   {
     path: "/",
+    redirect: "signin",
+  },
+  {
+    path: "/",
     component: Index,
     children: [
+      { path: "/signin", component: SignIn },
       { path: "/ranking", component: Ranking },
       { path: "/discussion", component: Discussion },
       { path: "/following", component: Following },

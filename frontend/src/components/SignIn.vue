@@ -1,13 +1,17 @@
 <template>
-  <el-form :model="form" label-width="120px">
-    <el-form-item label="userName">
-      <el-input v-model="form.userName" />
-    </el-form-item>
-    <el-form-item>
-      <el-button type="primary" @click="onSubmit">Create</el-button>
-      <el-button>Cancel</el-button>
-    </el-form-item>
-  </el-form>
+  <el-container style="border: 1px solid #eee">
+    <el-form :model="form">
+      <el-form-item>
+        <el-input v-model="form.userName" placeholder="Username" />
+      </el-form-item>
+      <el-form-item>
+        <el-input v-model="form.passWord" placeholder="Password" />
+      </el-form-item>
+      <el-form-item>
+        <el-button type="primary" @click="onSubmit">Sign In</el-button>
+      </el-form-item>
+    </el-form>
+  </el-container>
 </template>
 
 <script lang="ts" setup>

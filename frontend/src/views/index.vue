@@ -19,7 +19,7 @@
     >
   </el-header>
 
-  <el-row class="tac" style="height: calc(100% - 60px)">
+  <el-row style="height: calc(100% - 60px)">
     <el-menu
       style="height: 100%"
       default-active="ranking"
@@ -59,28 +59,17 @@
   </el-row>
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
+import { ref } from "vue";
 import { ElMessage } from "element-plus";
 import router from "@/router";
-
-export default {
-  data() {
-    return {
-      menuCollapsed: false,
-      userName: "wushenghao",
-    };
-  },
-  methods: {
-    signOut() {
-      router.push("/signin");
-      ElMessage("Sign out successfully.");
-    },
-  },
-};
-</script>
-
-<script lang="ts" setup>
 import { Menu } from "@element-plus/icons-vue";
+
+const menuCollapsed = ref(false);
+const signOut = () => {
+  router.push("/signin");
+  ElMessage("Sign out successfully.");
+};
 </script>
 
 <style scoped></style>

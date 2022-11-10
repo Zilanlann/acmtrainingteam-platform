@@ -1,1 +1,3 @@
-<template>Following</template>
+<template>
+  <el-container> Following</el-container>
+</template>

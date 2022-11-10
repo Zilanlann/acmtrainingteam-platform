@@ -1,1 +1,1 @@
-<template>Ranking</template>
+<template><el-container>Ranking</el-container></template>

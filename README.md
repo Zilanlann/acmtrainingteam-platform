@@ -4,5 +4,5 @@
 ACM集训队平台
 
 #### 软件架构
-软件架构说明
+请单独打开backend 和 frontend
 

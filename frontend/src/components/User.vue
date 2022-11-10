@@ -1,1 +1,1 @@
-<template>User</template>
+<template><el-container>User</el-container></template>

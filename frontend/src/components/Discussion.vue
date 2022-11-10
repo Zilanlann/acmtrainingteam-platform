@@ -1,1 +1,3 @@
-<template>Discussion</template>
+<template>
+  <el-container> Discussion </el-container>
+</template>

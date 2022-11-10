@@ -1,1 +1,1 @@
-<template>Settings</template>
+<template><el-container>Settings</el-container></template>

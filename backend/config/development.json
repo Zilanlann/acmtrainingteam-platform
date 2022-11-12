@@ -3,6 +3,7 @@
         "host": "localhost",
         "user": "root",
         "password": "123456",
-        "database": "test"
-    }
+        "database": "acm_training_platform"
+    },
+    "serverPort": 5000
 }

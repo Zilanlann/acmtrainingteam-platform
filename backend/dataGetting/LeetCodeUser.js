@@ -13,8 +13,8 @@ export default class LeetCodeUser {
     const graphql = JSON.stringify({
       query: `query getRecentSubmissionList($username: String!) {
 				recentSubmissions(userSlug: $username) {
-					submission_id:id submit_time:submitTime status question {
-						title:translatedTitle difficulty title_slug:titleSlug tags:topicTags{
+					submission_id:id submit_time:submitTime status problem:question {
+						problem_id:questionId title:translatedTitle difficulty title_slug:titleSlug tags:topicTags{
 							name
 								}
 							}

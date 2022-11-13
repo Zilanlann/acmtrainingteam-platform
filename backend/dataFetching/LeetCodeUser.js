@@ -1,5 +1,6 @@
 import fetch from "node-fetch"
 
+// Package API(s) of one user of LeetCode
 // Usage:
 // const user = new LeetCodeUser("shenghaowu")
 // const res = await user.getRecentSubmissionList()
@@ -12,8 +13,8 @@ export default class LeetCodeUser {
         const graphql = JSON.stringify({
             query: `query getRecentSubmissionList($username: String!) {
 						recentSubmissions(userSlug: $username) {
-							id submitTime status question {
-								title difficulty titleSlug topicTags{
+							submission_id:id submit_time:submitTime status question {
+								title:translatedTitle difficulty title_slug:titleSlug tags:topicTags{
 									name
 								}
 							}

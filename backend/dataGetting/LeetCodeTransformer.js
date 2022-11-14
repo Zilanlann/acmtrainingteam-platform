@@ -11,8 +11,8 @@ const LEETCODE_STATUS_TRANSFORMER = {
   A_30: 'TO'
 };
 
-export default class DataTransformer {
-  static transformLeetCodeSubmissions(submissionArray, userId) {
+export default class LeetCodeTransformer {
+  static transformSubmissions(submissionArray, userId) {
     const leetCodeSubmission = [];
     const leetCodeProblem = [];
     const problemSet = new Set();
@@ -23,32 +23,17 @@ export default class DataTransformer {
         continue;
       }
 
-      leetCodeSubmission.push({
-        submission_id: submission.submission_id,
-        user_id: userId,
-        submit_time: submission.submit_time,
-        problem_id: submission.problem?.problem_id,
-        status: LEETCODE_STATUS_TRANSFORMER[submission.status]
-      });
+      leetCodeSubmission.push([parseInt(submission.submission_id), userId, submission.submit_time, parseInt(submission.problem?.problem_id), LEETCODE_STATUS_TRANSFORMER[submission.status]]);
 
       if (problemSet.has(submission.problem?.problem_id)) {
         continue;
       }
 
-      leetCodeProblem.push({
-        problem_id: submission.problem?.problem_id,
-        title: submission.problem?.title,
-        tilte_slug: submission.problem?.title_slug,
-        difficulty: submission.problem?.difficulty
-      });
+      leetCodeProblem.push([submission.problem?.problem_id, submission.problem?.title, submission.problem?.title_slug, submission.problem?.difficulty]);
       problemSet.add(submission.problem?.problem_id);
 
       for (const tag of submission.problem?.tags) {
-        problemTag.push({
-          platform: 'LeetCode',
-          problem_id: submission.problem?.problem_id,
-          tag: tag.name
-        });
+        problemTag.push(['LeetCode', submission.problem?.problem_id, tag.name]);
       }
     }
 

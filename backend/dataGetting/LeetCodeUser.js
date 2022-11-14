@@ -27,10 +27,11 @@ export default class LeetCodeUser {
       headers: { 'content-type': 'application/json' },
       body: graphql
     };
-    const response = await fetch('https://leetcode.cn/graphql/', requestOptions);
-    if (!response.ok) {
-      throw new HTTPResponseError(response);
-    }
-    return (await response.json()).data.recentSubmissions;
+		const response = await fetch('https://leetcode.cn/graphql/', requestOptions);
+		const result = await response.json();
+		if (result.data.recentSubmissions.length == 0) {
+			throw new Error(`LeetCode user ${this.userName} may not exist.`);
+		}
+		return result.data.recentSubmissions;
   }
 }

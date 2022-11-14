@@ -17,14 +17,11 @@ export default class CodeforcesUser {
       url += `&count=${count}`;
     }
 
-    const response = await fetch(url);
-    if (!response.ok) {
-      throw new HTTPResponseError(response);
-    }
-    return await response.json();
+		const response = await fetch(url);
+		const result = await response.json();
+		if (result.status !== 'OK') {
+			throw new Error(`Codeforces ${result.comment}`)
+		}
+    return await result.result;
   }
 }
-
-const user = new CodeforcesUser('wushenghao');
-const res = await user.getSubmissionList();
-console.log(res);

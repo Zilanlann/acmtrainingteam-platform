@@ -33,7 +33,7 @@ export default class LeetCodeTransformer {
       problemSet.add(submission.problem?.problem_id);
 
       for (const tag of submission.problem?.tags) {
-        problemTag.push(['LeetCode', submission.problem?.problem_id, tag.name]);
+        problemTag.push([submission.problem?.problem_id, tag.name]);
       }
     }
 

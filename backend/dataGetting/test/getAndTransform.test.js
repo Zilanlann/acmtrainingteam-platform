@@ -1,7 +1,7 @@
-import LeetCodeUser from "./LeetCodeUser.js"
-import LeetCodeTransformer from './LeetCodeTransformer.js';
-import CodeforcesUser from './CodeforcesUser.js';
-import CodeforcesTransformer from "./CodeforcesTransformer.js";
+import LeetCodeUser from "../LeetCodeUser.js"
+import LeetCodeTransformer from '../LeetCodeTransformer.js';
+import CodeforcesUser from '../CodeforcesUser.js';
+import CodeforcesTransformer from "../CodeforcesTransformer.js";
 
 // const user = new LeetCodeUser("shenghaowu")
 // const submissionList = await user.getRecentSubmissionList()

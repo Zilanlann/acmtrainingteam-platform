@@ -1,9 +1,9 @@
 import util from 'util';
 import config from 'config';
 import { createConnection } from 'mysql';
-import LeetCodeStoring from './LeetCodeStoring.js';
-import LeetCodeUser from '../dataGetting/LeetCodeUser.js';
-import LeetCodeTransformer from '../dataGetting/LeetCodeTransformer.js';
+import LeetCodeStoring from '../LeetCodeStoring.js';
+import LeetCodeUser from '../../dataGetting/LeetCodeUser.js';
+import LeetCodeTransformer from '../../dataGetting/LeetCodeTransformer.js';
 
 const dbConfig = config.get('dbConfig');
 const connection = createConnection(dbConfig);

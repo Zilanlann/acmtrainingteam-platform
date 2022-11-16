@@ -11,6 +11,12 @@ const LEETCODE_STATUS_TRANSFORMER = {
   A_30: 'TO'
 };
 
+const DIFFICULTY_RATING_TRANSFORMER = {
+  Easy: 800,
+  Medium: 1200,
+  Hard: 1600
+};
+
 export default class LeetCodeTransformer {
   static transformSubmissions(submissionArray, userId) {
     const leetCodeSubmission = [];
@@ -29,7 +35,7 @@ export default class LeetCodeTransformer {
         continue;
       }
 
-      leetCodeProblem.push([submission.problem?.problem_id, submission.problem?.title, submission.problem?.title_slug, submission.problem?.difficulty]);
+      leetCodeProblem.push([submission.problem?.problem_id, submission.problem?.title, submission.problem?.title_slug, DIFFICULTY_RATING_TRANSFORMER[submission.problem?.difficulty]]);
       problemSet.add(submission.problem?.problem_id);
 
       for (const tag of submission.problem?.tags) {

@@ -1,30 +1,28 @@
 import express from 'express';
-import Following from '../dbQuery/following.js';
+import { Following, User } from '../dbQuery/index.js';
 
 const router = express.Router();
 
-// $route  POST api/following/add-exist-user-following
+// $route  POST api/following/add-user-following
 // @access public
-router.post('/add-exist-user-following', async (req, res) => {
-  try {
-    await Following.addExistUserFollowing(req.body);
-    res.json(`Add following of ${req.body.follow_id} successfully.`);
-  } catch (err) {
-    res.status(400).json(err);
-  }
-});
-
-// $route  POST api/following/add-platform-user-following
-// @access public
-router.post('/add-platform-user-following', async (req, res) => {
-  if (!req.body.nickname || !req.body.user_name || (!req.body.codeforces_handle && !req.body.leedcode_handle)) {
-    res.status(400).json(`The data is not in the correct format.`);
+router.post('/add-user-following', async (req, res) => {
+  if (!req.body.follow_name || !req.body.user_id) {
+    res.status(400).json(`The data is not correct.`);
     return;
-	}
-	try {
-		
-    await Following.addPlatformUserFollowing(req.body);
-    res.json(`Add following of ${req.body.nickname} successfully.`);
+  }
+  try {
+    const selectResult = await User.getUserInformation({ name: req.body.follow_name });
+    if (selectResult.length === 0) {
+      res.status(400).json(`The user ${req.body.follow_name} has not registered.`);
+      return;
+		}
+		const follow_id = selectResult[0].id;
+    await Following.addUserFollowing({
+      user_id: req.body.user_id,
+      follow_id,
+      nickname: req.body.nickname
+    });
+    res.json(`Add following of ${req.body.follow_name} successfully.`);
   } catch (err) {
     res.status(400).json(err);
   }

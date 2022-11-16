@@ -1,5 +1,5 @@
 import express from 'express';
-import User from '../dbQuery/User.js'
+import connection from '../dbConnection.js';
 
 const router = express.Router();
 
@@ -7,7 +7,7 @@ const router = express.Router();
 // @access public
 router.post('/register', async (req, res) => {
 	try{
-		await User.registerUser(req.body);
+		await connection.query(`INSERT INTO user SET ?`, req.body);
 		res.json(`User ${req.body.name} has been registered successfully.`);
 	}
 	catch (err) {

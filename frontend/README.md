@@ -1,4 +1,4 @@
-# client
+# new-frontend
 
 ## Project setup
 ```

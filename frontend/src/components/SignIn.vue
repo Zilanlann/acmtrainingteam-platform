@@ -14,7 +14,7 @@
   </el-container>
 </template>
 
-<script lang="ts" setup>
+<script setup>
 import { reactive } from "vue";
 
 const form = reactive({
@@ -23,6 +23,6 @@ const form = reactive({
 });
 
 const onSubmit = () => {
-  console.log("submit!");
+  console.log();
 };
 </script>

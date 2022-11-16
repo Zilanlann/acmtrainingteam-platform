@@ -1,4 +1,4 @@
-import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
+import { createRouter, createWebHistory} from "vue-router";
 import Index from "@/views/Index.vue";
 import SignIn from "@/components/SignIn.vue";
 import Ranking from "@/components/Ranking.vue";
@@ -8,7 +8,7 @@ import Problems from "@/components/Problems.vue";
 import Settings from "@/components/Settings.vue";
 import User from "@/components/User.vue";
 
-const routes: Array<RouteRecordRaw> = [
+const routes = [
   {
     path: "/",
     redirect: "signin",
@@ -23,7 +23,8 @@ const routes: Array<RouteRecordRaw> = [
       { path: "/following", component: Following },
       { path: "/problems", component: Problems },
       { path: "/settings", component: Settings },
-      { path: "/user", component: User },
+      { path: "/user/:userName", component: User },
+      { path: "/user/", component: User },
     ],
   },
 ];

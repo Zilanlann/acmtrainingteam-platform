@@ -1,11 +1,7 @@
 <template>
   <el-container style="height: 100%">
     <el-header
-      style="
-        text-align: center;
-        background-color: rgb(238, 241, 246);
-        line-height: 60px;
-      "
+      style="text-align: center; background-color: #eeeeee; line-height: 60px"
     >
       <el-button
         style="float: left; margin-top: 14px"
@@ -101,6 +97,16 @@ export default {
     refreshMenu() {
       this.menuKey++;
     },
+  },
+  async created() {
+    try {
+      const res = await this.$http.get("/test");
+      if (res.data !== 2) {
+        this.$message.error("The database is not working properly.");
+      }
+    } catch (err) {
+      this.$message.error(err);
+    }
   },
 };
 </script>

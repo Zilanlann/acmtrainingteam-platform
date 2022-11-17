@@ -14,15 +14,24 @@
   </el-container>
 </template>
 
-<script setup>
-import { reactive } from "vue";
-
-const form = reactive({
-  userName: "",
-  passWord: "",
-});
-
-const onSubmit = () => {
-  console.log();
+<script>
+export default {
+  data() {
+    return {
+      form: {
+        userName: "",
+        passWord: "",
+      },
+    };
+  },
+  methods: {
+    onSubmit() {
+      this.$cookies.set("userId", this.form.userName);
+      this.$emit("refreshCookie");
+      this.$message("You have signed in successfully.");
+      this.$router.push("/ranking");
+      this.$emit("refreshMenu");
+    },
+  },
 };
 </script>

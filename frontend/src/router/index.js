@@ -1,4 +1,4 @@
-import { createRouter, createWebHistory} from "vue-router";
+import { createRouter, createWebHistory } from "vue-router";
 import Index from "@/views/Index.vue";
 import SignIn from "@/components/SignIn.vue";
 import Ranking from "@/components/Ranking.vue";
@@ -7,6 +7,7 @@ import Following from "@/components/Following.vue";
 import Problems from "@/components/Problems.vue";
 import Settings from "@/components/Settings.vue";
 import User from "@/components/User.vue";
+import Submissions from "@/components/Submissions.vue";
 
 const routes = [
   {
@@ -23,8 +24,9 @@ const routes = [
       { path: "/following", component: Following },
       { path: "/problems", component: Problems },
       { path: "/settings", component: Settings },
-      { path: "/user/:userName", component: User },
-      { path: "/user/", component: User },
+      { path: "/user", component: User },
+      { path: "/user/:userId", component: User },
+      { path: "/submissions/:userId", component: Submissions },
     ],
   },
 ];

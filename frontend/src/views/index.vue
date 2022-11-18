@@ -12,9 +12,16 @@
           <Menu />
         </el-icon>
       </el-button>
-      <span>Nanjing University's ACM Platform</span>
-      <el-button style="float: right; margin-top: 14px" @click="signOut">
-        Sign Out</el-button
+      <span v-if="cookie">Hello, {{ userName }}</span>
+      <span v-else>Nanjing University's ACM Platform</span>
+      <el-button
+        v-if="cookie"
+        style="float: right; margin-top: 14px"
+        @click="signOut"
+        >Sign Out</el-button
+      >
+      <el-button v-else style="float: right; margin-top: 14px" @click="gotoSignIn"
+        >Sign In</el-button
       >
     </el-header>
     <el-container>
@@ -24,6 +31,7 @@
           :collapse="menuCollapsed"
           :key="menuKey"
           class="el-menu-vertical"
+          :collapse-transition="false"
           router
         >
           <el-menu-item index="ranking" route="/ranking">
@@ -83,6 +91,7 @@ export default {
       menuCollapsed: false,
       asideWidth: "150px",
       cookie: this.$cookies.get("userId"),
+      userName: "wushenghao",
     };
   },
   methods: {
@@ -92,11 +101,12 @@ export default {
       this.$cookies.remove("userId");
       this.refreshCookie();
     },
+    gotoSignIn() {
+      this.$router.push("/signin");
+    },
     collapseMenu() {
       this.menuCollapsed = !this.menuCollapsed;
-      this.$nextTick(() => {
-        this.asideWidth = this.menuCollapsed ? "65px" : "150px";
-      });
+      this.asideWidth = this.menuCollapsed ? "65px" : "150px";
     },
     refreshCookie() {
       this.cookie = this.$cookies.get("userId");

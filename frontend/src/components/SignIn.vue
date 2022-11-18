@@ -28,7 +28,7 @@ export default {
     onSubmit() {
       this.$cookies.set("userId", this.form.userName);
       this.$emit("refreshCookie");
-      this.$message("You have signed in successfully.");
+      this.$message.success("You have signed in successfully.");
       this.$router.push("/ranking");
       this.$emit("refreshMenu");
     },

@@ -5,10 +5,13 @@
   <div v-else>
     <el-container>{{ $route.params.userId }} 's information</el-container>
     <el-divider />
-    <el-container
-      >Recent submissions
-      <el-link :href="`/submissions/${$route.params.userId}`">more</el-link>
-    </el-container>
+    <el-container>Recent submissions </el-container>
+    <el-button
+      @click="this.$router.push(`/submissions/${$route.params.userId}`)"
+      text
+    >
+      More
+    </el-button>
   </div>
 </template>
 

@@ -11,18 +11,29 @@ export default class CodeforcesTransformer {
         continue;
       }
       const problemId = `${submission.problem.contestId}/${submission.problem.index}`;
-      codeforcesSubmission.push([submission.id, userId, submission.creationTimeSeconds, problemId, submission.verdict]);
+      codeforcesSubmission.push([
+        submission.id,
+        userId,
+        submission.creationTimeSeconds,
+        problemId,
+        submission.verdict,
+      ]);
 
       if (problemSet.has(submission.problem?.problem_id)) {
         continue;
       }
 
-      codeforcesProblem.push([problemId, submission.problem?.name, submission.problem?.rating, submission.problem?.tags.toString()]);
-      problemSet.add(problemId);
-
       for (const tag of submission.problem?.tags) {
         problemTag.push([problemId, tag]);
       }
+
+      codeforcesProblem.push([
+        problemId,
+        submission.problem?.name,
+        submission.problem?.rating,
+        submission.problem?.tags.toString(),
+      ]);
+      problemSet.add(problemId);
     }
 
     return {

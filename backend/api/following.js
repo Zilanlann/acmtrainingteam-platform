@@ -1,11 +1,11 @@
-import express from 'express';
-import connection from '../dbConnection.js';
+import express from "express";
+import connection from "../dbConnection.js";
 
 const router = express.Router();
 
 // $route  POST api/following/add-following
 // @access public
-router.post('/add-following', async (req, res) => {
+router.post("/add-following", async (req, res) => {
   if (!req.body.follow_name || !req.body.user_id) {
     res.status(400).json(`The data is not correct.`);
     return;
@@ -13,7 +13,7 @@ router.post('/add-following', async (req, res) => {
 
   try {
     const selectResult = await connection.query(`SELECT id FROM user WHERE ?`, {
-      name: req.body.follow_name
+      name: req.body.follow_name,
     });
     if (selectResult.length === 0) {
       res.status(400).json(`The user ${req.body.follow_name} has not registered.`);
@@ -24,7 +24,7 @@ router.post('/add-following', async (req, res) => {
     await connection.query(`INSERT INTO user_following SET ?`, {
       user_id: req.body.user_id,
       follow_id,
-      nickname: req.body.nickname
+      nickname: req.body.nickname,
     });
     res.json(`Add following of ${req.body.follow_name} successfully.`);
   } catch (err) {

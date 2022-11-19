@@ -6,7 +6,7 @@ const router = express.Router();
 // $route  POST api/submissions
 // @access public
 router.post("/", async (req, res) => {
-	if (!req.body) {
+  if (!req.body) {
     res.status(400).json(`Data is not in the correct format.`);
     return;
   }

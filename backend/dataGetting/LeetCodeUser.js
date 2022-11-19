@@ -1,4 +1,4 @@
-import fetch from 'node-fetch';
+import fetch from "node-fetch";
 
 // Package API(s) of one user of LeetCode
 // Usage:
@@ -20,18 +20,18 @@ export default class LeetCodeUser {
 							}
 						}
 					}`,
-      variables: { username: this.userName }
+      variables: { username: this.userName },
     });
     const requestOptions = {
-      method: 'POST',
-      headers: { 'content-type': 'application/json' },
-      body: graphql
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: graphql,
     };
-		const response = await fetch('https://leetcode.cn/graphql/', requestOptions);
-		const result = await response.json();
-		if (result.data.recentSubmissions.length == 0) {
-			throw new Error(`LeetCode user ${this.userName} may not exist.`);
-		}
-		return result.data.recentSubmissions;
+    const response = await fetch("https://leetcode.cn/graphql/", requestOptions);
+    const result = await response.json();
+    if (result.data.recentSubmissions.length == 0) {
+      throw new Error(`LeetCode user ${this.userName} may not exist.`);
+    }
+    return result.data.recentSubmissions;
   }
 }

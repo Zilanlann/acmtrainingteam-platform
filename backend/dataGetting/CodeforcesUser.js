@@ -1,4 +1,4 @@
-import fetch from 'node-fetch';
+import fetch from "node-fetch";
 
 // Package API(s) of one user of Codeforces
 // Usage:
@@ -17,11 +17,11 @@ export default class CodeforcesUser {
       url += `&count=${count}`;
     }
 
-		const response = await fetch(url);
-		const result = await response.json();
-		if (result.status !== 'OK') {
-			throw new Error(`Codeforces ${result.comment}`)
-		}
+    const response = await fetch(url);
+    const result = await response.json();
+    if (result.status !== "OK") {
+      throw new Error(`Codeforces ${result.comment}`);
+    }
     return await result.result;
   }
 }

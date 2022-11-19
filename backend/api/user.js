@@ -19,10 +19,13 @@ router.post("/register", async (req, res) => {
 router.post("/signin", async (req, res) => {
   try {
     if (!(req.body.type && req.body.password && req.body.usernameOrEmail)) {
-			res.status(400).json(`Data is not in the correct format.`);
-			return;
+      res.status(400).json(`Data is not in the correct format.`);
+      return;
     }
-		const selectResult = await connection.query(`SELECT id, name, password FROM user WHERE ?? = ?`, [req.body.type, req.body.usernameOrEmail]);
+    const selectResult = await connection.query(
+      `SELECT id, name, password FROM user WHERE ?? = ?`,
+      [req.body.type, req.body.usernameOrEmail]
+    );
     if (selectResult.length === 0) {
       res.send({ ok: false, message: "This user has not registered." });
       return;

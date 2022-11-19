@@ -1,9 +1,5 @@
-import following from './following.js';
-import user from './user.js';
-import submissions from './submissions.js'
+import following from "./following.js";
+import user from "./user.js";
+import submissions from "./submissions.js";
 
-export {
-	submissions,
-	following,
-	user
-};
+export { submissions, following, user };

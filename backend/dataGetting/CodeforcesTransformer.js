@@ -7,7 +7,7 @@ export default class CodeforcesTransformer {
     const problemTag = [];
 
     for (const submission of submissionArray) {
-      if (submission.verdict === 'TESTING') {
+      if (submission.verdict === "TESTING") {
         continue;
       }
       const problemId = `${submission.problem.contestId}/${submission.problem.index}`;
@@ -17,7 +17,7 @@ export default class CodeforcesTransformer {
         continue;
       }
 
-      codeforcesProblem.push([problemId, submission.problem?.name, submission.problem?.rating]);
+      codeforcesProblem.push([problemId, submission.problem?.name, submission.problem?.rating, submission.problem?.tags.toString()]);
       problemSet.add(problemId);
 
       for (const tag of submission.problem?.tags) {
@@ -28,7 +28,7 @@ export default class CodeforcesTransformer {
     return {
       codeforcesSubmission,
       codeforcesProblem,
-      problemTag
+      problemTag,
     };
   }
 }

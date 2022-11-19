@@ -35,7 +35,7 @@ export default class LeetCodeTransformer {
         continue;
       }
 
-      leetCodeProblem.push([submission.problem?.problem_id, submission.problem?.title, submission.problem?.title_slug, DIFFICULTY_RATING_TRANSFORMER[submission.problem?.difficulty]]);
+      leetCodeProblem.push([submission.problem?.problem_id, submission.problem?.title, submission.problem?.title_slug, DIFFICULTY_RATING_TRANSFORMER[submission.problem?.difficulty]], submission.problem?.tags.toString());
       problemSet.add(submission.problem?.problem_id);
 
       for (const tag of submission.problem?.tags) {

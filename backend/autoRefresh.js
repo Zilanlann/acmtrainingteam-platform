@@ -1,8 +1,8 @@
-import connection from './dbConnection.js';
-import { LeetCodeUser, LeetCodeTransformer, CodeforcesUser, CodeforcesTransformer } from './dataGetting/index.js';
+import connection from "./dbConnection.js";
+import { LeetCodeUser, LeetCodeTransformer, CodeforcesUser, CodeforcesTransformer } from "./dataGetting/index.js";
 
 // Codeforces refreshing
-const codeforcesRow = await connection.query('SELECT id, codeforces_handle FROM user WHERE codeforces_handle is not NULL');
+const codeforcesRow = await connection.query("SELECT id, codeforces_handle FROM user WHERE codeforces_handle is not NULL");
 
 for (const row of codeforcesRow) {
   const user = new CodeforcesUser(row.codeforces_handle);
@@ -18,7 +18,7 @@ for (const row of codeforcesRow) {
 
   const problemQuery =
     `INSERT IGNORE INTO problem
-		(codeforces_problem_id, title, rating)
+		(codeforces_problem_id, title, rating, tags)
 		VALUES ` + connection.escape(codeforcesProblem);
   connection.query(problemQuery);
 
@@ -30,11 +30,13 @@ for (const row of codeforcesRow) {
 }
 
 // LeetCode refreshing
-const leetcodeRow = await connection.query('SELECT id, leetcode_handle FROM user WHERE leetcode_handle is not NULL');
+const leetcodeRow = await connection.query("SELECT id, leetcode_handle FROM user WHERE leetcode_handle is not NULL");
 
 for (const row of leetcodeRow) {
   const user = new LeetCodeUser(row.leetcode_handle);
   const submissionList = await user.getRecentSubmissionList();
+
+  console.log(submissionList);
 
   const { leetCodeSubmission, leetCodeProblem, problemTag } = LeetCodeTransformer.transformSubmissions(submissionList, row.id);
 
@@ -46,7 +48,7 @@ for (const row of leetcodeRow) {
 
   const problemQuery =
     `INSERT IGNORE INTO problem
-		(leetcode_problem_id, title, title_slug, rating)
+		(leetcode_problem_id, title, title_slug, rating, tags)
 		VALUES ` + connection.escape(leetCodeProblem);
   connection.query(problemQuery);
 

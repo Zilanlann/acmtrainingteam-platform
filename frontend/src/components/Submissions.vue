@@ -20,33 +20,22 @@
 export default {
   data() {
     return {
-      tableData: [
-        {
-          date: "2016-05-02",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1518 弄",
-        },
-        {
-          date: "2016-05-04",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1517 弄",
-        },
-        {
-          date: "2016-05-01",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1519 弄",
-        },
-        {
-          date: "2016-05-03",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1516 弄",
-        },
-      ],
+      tableData: [],
     };
   },
   methods: {},
-	async created(){
-		
-	}
+  async created() {
+    try {
+      const res = await this.$http.post("/api/submissions", {
+        user_id: parseInt(this.$route.params.userId),
+      });
+      if (res.data.ok) {
+        this.tableData = res.data.result;
+      }
+    } catch (err) {
+      console.error(err);
+      this.$message.error(err);
+    }
+  },
 };
 </script>

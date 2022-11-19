@@ -12,15 +12,18 @@
           <Menu />
         </el-icon>
       </el-button>
-      <span v-if="cookie">Hello, {{ userName }}</span>
+      <span v-if="userId">Hello, {{ userName }}</span>
       <span v-else>Nanjing University's ACM Platform</span>
       <el-button
-        v-if="cookie"
+        v-if="userId"
         style="float: right; margin-top: 14px"
         @click="signOut"
         >Sign Out</el-button
       >
-      <el-button v-else style="float: right; margin-top: 14px" @click="gotoSignIn"
+      <el-button
+        v-else
+        style="float: right; margin-top: 14px"
+        @click="gotoSignIn"
         >Sign In</el-button
       >
     </el-header>
@@ -54,7 +57,7 @@
           </el-menu-item>
           <el-menu-item
             index="user"
-            :route="cookie ? `/user/${cookie}` : '/user'"
+            :route="userId ? `/user/${userId}` : '/user'"
           >
             <el-icon> <User /> </el-icon>
             <span>User</span>
@@ -75,7 +78,7 @@
       </el-aside>
       <el-main style="padding: 0">
         <router-view
-          @refreshCookie="refreshCookie"
+          @refreshUser="refreshUser"
           @refreshMenu="refreshMenu"
         ></router-view>
       </el-main>
@@ -90,16 +93,21 @@ export default {
       menuKey: 0,
       menuCollapsed: false,
       asideWidth: "150px",
-      cookie: this.$cookies.get("userId"),
-      userName: "wushenghao",
+      cookie: this.$cookies.get("token"),
+      userName: "",
+      userId: 0,
     };
   },
   methods: {
     signOut() {
       this.$router.push("/signin");
-      this.$message("You have signed out successfully.");
-      this.$cookies.remove("userId");
-      this.refreshCookie();
+      this.$message({
+        message: "You have signed out successfully.",
+        duration: 1000,
+      });
+      this.$cookies.remove("token");
+      this.userName = "";
+      this.userId = 0;
     },
     gotoSignIn() {
       this.$router.push("/signin");
@@ -108,8 +116,9 @@ export default {
       this.menuCollapsed = !this.menuCollapsed;
       this.asideWidth = this.menuCollapsed ? "65px" : "150px";
     },
-    refreshCookie() {
-      this.cookie = this.$cookies.get("userId");
+    refreshUser() {
+      this.userName = this.$cookies.get("token").name;
+      this.userId = this.$cookies.get("token").id;
     },
     refreshMenu() {
       this.menuKey++;
@@ -117,7 +126,7 @@ export default {
   },
   async created() {
     try {
-      const res = await this.$http.get("/test");
+      const res = await this.$http.get("/api/test");
       if (res.data !== 2) {
         this.$message.error("The database is not working properly.");
       } else {

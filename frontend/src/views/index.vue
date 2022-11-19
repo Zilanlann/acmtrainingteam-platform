@@ -27,10 +27,10 @@
         >Sign In</el-button
       >
     </el-header>
-    <el-container>
+    <el-container style="height: calc(100% - 60px)">
       <el-aside :width="asideWidth" style="transition: width 0.5s">
         <el-menu
-          style="height: 100%"
+          style="height: 100%; overflow: hidden"
           :collapse="menuCollapsed"
           :key="menuKey"
           class="el-menu-vertical"

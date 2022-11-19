@@ -1,13 +1,13 @@
 // Transform original data to fit the format of database
 const LEETCODE_STATUS_TRANSFORMER = {
-  A_10: "OK",
-  A_11: "WRONG_ANSWER",
-  A_12: "MEMORY_LIMIT_EXCEEDED",
-  A_13: "OUTPUT_LIMIT_EXCEEDED",
-  A_14: "TIME_LIMIT_EXCEEDED",
-  A_15: "RUNTIME_ERROR",
+  A_10: "Accepted",
+  A_11: "Wrong Answer",
+  A_12: "Memory Limit Exceeded",
+  A_13: "Output Limit Exceeded",
+  A_14: "Time Limit Exceeded",
+  A_15: "Runtime Error",
   A_16: "IE",
-  A_20: "COMPILATION_ERROR",
+  A_20: "Compilation Error",
   A_30: "TO",
 };
 

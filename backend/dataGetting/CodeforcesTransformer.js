@@ -1,4 +1,23 @@
 // Transform original data to fit the format of database
+const CODEFORCES_STATUS_TRANSFORMER = {
+  OK: "Accepted",
+  WRONG_ANSWER: "Wrong Answer",
+  MEMORY_LIMIT_EXCEEDED: "Memory Limit Exceeded",
+  TIME_LIMIT_EXCEEDED: "Time Limit Exceeded",
+  RUNTIME_ERROR: "Runtime Error",
+  COMPILATION_ERROR: "Compilation Error",
+  SKIPPED: "Skipped",
+  PRESENTATION_ERROR: "Presentation Error",
+  FAILED: "Failed",
+  PARTIAL: "Partial",
+  IDLENESS_LIMIT_EXCEEDED: "Idleness Limit Exceeded",
+  SECURITY_VIOLATED: "Security Violated",
+  CRASHED: "Crashed",
+  INPUT_PREPARATION_CRASHED: "Input Preparation Crashed",
+  CHALLENGED: "Challenged",
+  REJECTED: "Rejected",
+};
+
 export default class CodeforcesTransformer {
   static transformSubmissions(submissionArray, userId) {
     const codeforcesSubmission = [];
@@ -16,7 +35,7 @@ export default class CodeforcesTransformer {
         userId,
         submission.creationTimeSeconds,
         problemId,
-        submission.verdict,
+        CODEFORCES_STATUS_TRANSFORMER[submission.verdict],
       ]);
 
       if (problemSet.has(submission.problem?.problem_id)) {

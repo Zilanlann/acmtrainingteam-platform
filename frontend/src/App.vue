@@ -10,6 +10,8 @@ body,
   height: 100%;
 }
 
+div,
+main,
 body {
   margin: 0;
   padding: 0;

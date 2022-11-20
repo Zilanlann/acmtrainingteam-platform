@@ -8,6 +8,7 @@ import Problems from "@/components/Problems.vue";
 import Settings from "@/components/Settings.vue";
 import User from "@/components/User.vue";
 import Submissions from "@/components/Submissions.vue";
+import Register from "@/components/Register.vue";
 
 const routes = [
   {
@@ -27,6 +28,7 @@ const routes = [
       { path: "/user", component: User },
       { path: "/user/:userId", component: User },
       { path: "/submissions/:userId", component: Submissions },
+      { path: "/register", component: Register },
     ],
   },
 ];

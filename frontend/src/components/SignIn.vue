@@ -1,34 +1,40 @@
 <template>
-  <div
-    style="
-      height: 130px;
-      width: 300px;
-      margin: 10% auto;
-      padding: 30px;
-      border: 2px solid #eee;
-    "
+  <el-card
+    style="height: 250px; width: 300px; margin: 10% auto; padding: 0 30px"
   >
-    <el-form :model="form">
-      <el-form-item>
+    <el-row justify="center" style="margin: 14px"> Sign In </el-row>
+    <el-form :model="form" :rules="rules">
+      <el-form-item prop="usernameOrEmail">
         <el-input
+          @keyup.enter="onSubmit"
           v-model="form.usernameOrEmail"
           placeholder="Username or email"
           clearable
         />
       </el-form-item>
-      <el-form-item>
+      <el-form-item prop="password">
         <el-input
+          @keyup.enter="onSubmit"
           v-model="form.password"
           placeholder="Password"
           clearable
           show-password
         />
       </el-form-item>
-      <el-form-item>
-        <el-button type="primary" @click="onSubmit">Sign In</el-button>
+      <el-button
+        type="primary"
+        style="font-size: small"
+        link
+        @click="this.$router.push(`/register`)"
+        >Do not have account?
+      </el-button>
+      <el-form-item justify="center">
+        <el-button style="margin: 10px 92px" type="primary" @click="onSubmit"
+          >Sign In</el-button
+        >
       </el-form-item>
     </el-form>
-  </div>
+  </el-card>
 </template>
 
 <script>
@@ -38,6 +44,22 @@ export default {
       form: {
         usernameOrEmail: "",
         password: "",
+      },
+      rules: {
+        usernameOrEmail: [
+          {
+            required: true,
+            message: "Please input username or email",
+            trigger: "blur",
+          },
+        ],
+        password: [
+          {
+            required: true,
+            message: "Please input your password",
+            trigger: "blur",
+          },
+        ],
       },
     };
   },

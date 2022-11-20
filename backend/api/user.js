@@ -10,7 +10,7 @@ router.post("/register", async (req, res) => {
     await connection.query(`INSERT INTO user SET ?`, req.body);
     res.send({ ok: true });
   } catch (err) {
-    res.status(500).json(err);
+    res.send({ ok: false, err });
   }
 });
 

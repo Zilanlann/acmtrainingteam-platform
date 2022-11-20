@@ -127,9 +127,34 @@ export default {
     submit() {
       const formEl = this.$refs.formRef;
       if (!formEl) return;
-      formEl.validate((valid) => {
+      formEl.validate(async (valid) => {
         if (valid) {
-          this.$message.success("Register successfully.");
+          const reqBody = {
+            name: this.form.name,
+            password: this.form.password,
+            email: this.form.email,
+            qq: this.form.qq,
+            about: this.form.about,
+          };
+          const res = await this.$http.post("/api/user/register", reqBody);
+          console.log(res);
+          if (res.data.ok) {
+            this.$message.success("Register successfully.");
+            this.$router.push(`/signin`);
+          } else if (res.data?.err?.sqlMessage) {
+            if (res.data.err.sqlMessage.indexOf("user.user_name_uindex") !== -1)
+              this.$message.error(
+                `The username ${reqBody.name} has registered by others.`
+              );
+            else {
+              this.$message.error(
+                `The email ${reqBody.email} has registered by others. 
+								If it was not your operation, please contact the administrator.`
+              );
+            }
+          } else {
+            this.$message.error("Fail to register, backend has some problem.");
+          }
         } else {
           this.$message.error(
             "Fail to register, please check your information."

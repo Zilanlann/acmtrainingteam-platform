@@ -25,10 +25,6 @@ export default class LeetCodeTransformer {
     const problemTag = [];
 
     for (const submission of submissionArray) {
-      if (!submission?.status) {
-        continue;
-      }
-
       leetCodeSubmission.push([
         parseInt(submission.submission_id),
         userId,

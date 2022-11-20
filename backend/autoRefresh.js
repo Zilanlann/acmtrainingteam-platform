@@ -18,10 +18,10 @@ for (const row of codeforcesRow) {
   const { codeforcesSubmission, codeforcesProblem, problemTag } =
     CodeforcesTransformer.transformSubmissions(submissionList, row.id);
 
-  const submissionQuery =
-    `INSERT IGNORE INTO submission 
+  const submissionQuery = `INSERT INTO submission 
 		(submission_id, user_id, submit_time, codeforces_problem_id, status)
-		VALUES ` + connection.escape(codeforcesSubmission);
+		VALUES ${connection.escape(codeforcesSubmission)}
+		ON DUPLICATE KEY UPDATE status = VALUES(status);`;
   connection.query(submissionQuery);
 
   const problemQuery =
@@ -35,6 +35,8 @@ for (const row of codeforcesRow) {
 	 	(codeforces_problem_id, tag)
 	 	VALUES ` + connection.escape(problemTag);
   connection.query(tagQuery);
+
+  console.log(`Codeforces: ${row.codeforces_handle}`);
 }
 
 // LeetCode refreshing
@@ -49,10 +51,10 @@ for (const row of leetcodeRow) {
   const { leetCodeSubmission, leetCodeProblem, problemTag } =
     LeetCodeTransformer.transformSubmissions(submissionList, row.id);
 
-  const submissionQuery =
-    `INSERT IGNORE INTO submission 
+  const submissionQuery = `INSERT INTO submission 
 		(submission_id, user_id, submit_time, leetcode_problem_id, status)
-		VALUES ` + connection.escape(leetCodeSubmission);
+		VALUES  ${connection.escape(leetCodeSubmission)}
+		ON DUPLICATE KEY UPDATE status = VALUES(status)`;
   connection.query(submissionQuery);
 
   const problemQuery =
@@ -65,5 +67,7 @@ for (const row of leetcodeRow) {
     `INSERT IGNORE INTO problem_tag
 	 	(leetcode_problem_id, tag)
 	 	VALUES ` + connection.escape(problemTag);
-  connection.query(tagQuery);
+	connection.query(tagQuery);
+	
+	console.log(`LeetCode: ${row.leetcode_handle}`);
 }

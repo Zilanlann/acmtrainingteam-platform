@@ -115,6 +115,7 @@
 </template>
 
 <script>
+import moment from "moment";
 export default {
   data() {
     return {
@@ -156,8 +157,25 @@ export default {
       }
       return color;
     },
-    getLocalTime(time) {
-      return new Date(time * 1000).toLocaleString()
+    getLocalTime(timestamp) {
+      const nowMoment = moment();
+      const submitMoment = moment.unix(timestamp);
+      const units = [
+        "year",
+        "month",
+        "week",
+        "day",
+        "hour",
+        "minute",
+        "second",
+      ];
+      for (const unit of units) {
+        const unitDiffTime = nowMoment.diff(submitMoment, unit);
+        if (unitDiffTime) {
+          return `${unitDiffTime} ${unit}${unitDiffTime > 1 ? "s" : ""} ago`;
+        }
+      }
+      return "Now";
     },
     async getTableData() {
       try {

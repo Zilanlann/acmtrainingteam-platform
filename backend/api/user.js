@@ -9,7 +9,8 @@ router.post("/register", async (req, res) => {
   try {
     await connection.query(`INSERT INTO user SET ?`, req.body);
     res.send({ ok: true });
-  } catch (err) {
+	} catch (err) {
+		console.error(err);
     res.send({ ok: false, err });
   }
 });
@@ -35,7 +36,8 @@ router.post("/signin", async (req, res) => {
     } else {
       res.send({ ok: false, message: "The password is not correct." });
     }
-  } catch (err) {
+	} catch (err) {
+		console.error(err);
     res.status(500).json(err);
   }
 });

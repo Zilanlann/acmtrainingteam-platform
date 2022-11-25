@@ -27,7 +27,8 @@ router.post("/add-following", async (req, res) => {
       nickname: req.body.nickname,
     });
     res.json(`Add following of ${req.body.follow_name} successfully.`);
-  } catch (err) {
+	} catch (err) {
+		console.error(err);
     res.status(400).json(err);
   }
 });

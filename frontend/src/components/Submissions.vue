@@ -17,10 +17,7 @@
     </el-header>
     <el-divider style="margin: 0" />
     <el-table :data="tableData" stripe style="width: 100%">
-      <el-table-column
-        width="26px"
-        style="padding: 0"
-      >
+      <el-table-column width="26px" style="padding: 0">
         <template #default="scope">
           <img
             v-if="scope.row.title_slug"
@@ -38,10 +35,7 @@
           />
         </template>
       </el-table-column>
-      <el-table-column
-        label="Problem"
-        align="center"
-      >
+      <el-table-column label="Problem" align="center">
         <template #default="scope">
           <el-link
             type="primary"
@@ -55,10 +49,7 @@
           >
         </template>
       </el-table-column>
-      <el-table-column
-        label="User"
-        align="center"
-      >
+      <el-table-column label="User" align="center">
         <template #default="scope">
           <el-link @click="this.$router.push(`/user/${scope.row.user_name}`)">
             {{ scope.row.user_name }}

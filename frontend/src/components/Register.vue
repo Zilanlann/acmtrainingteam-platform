@@ -137,7 +137,6 @@ export default {
             about: this.form.about,
           };
           const res = await this.$http.post("/api/user/register", reqBody);
-          console.log(res);
           if (res.data.ok) {
             this.$message.success("Register successfully.");
             this.$router.push(`/signin`);

@@ -19,7 +19,8 @@ router.post("/", async (req, res) => {
       req.body.condition
     );
     res.json({ ok: true, result: queryResult });
-  } catch (err) {
+	} catch (err) {
+		console.error(err);
     res.status(500).json(err);
   }
 });
@@ -37,7 +38,8 @@ router.post("/number", async (req, res) => {
       req.body.condition
 		);
     res.json({ ok: true, number: queryResult[0].number });
-  } catch (err) {
+	} catch (err) {
+		console.error(err);
     res.status(500).json(err);
   }
 });

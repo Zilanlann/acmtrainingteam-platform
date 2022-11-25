@@ -3,20 +3,20 @@ import connection from "../dbConnection.js";
 
 const router = express.Router();
 
-// $route  POST api/submissions
+// $route  POST api/problems
 // @access public
 router.post("/", async (req, res) => {
-  if (!(req.body.condition && req.body.page)) {
+  if (!req.body.page) {
     res.status(400).json(`Data is not in the correct format.`);
     return;
   }
   try {
     const queryResult = await connection.query(
-      `SELECT submission_id, leetcode_problem_id, codeforces_problem_id, user_id,
-       user_name, submit_time, status, title, title_slug, rating, tags
-			 FROM submission_problem WHERE ?
+      `SELECT id, leetcode_problem_id, codeforces_problem_id,
+       title, title_slug, rating, tags, submit_number, accepted_number
+			 FROM problem_status WHERE ?
 			 LIMIT ${15 * (req.body.page - 1)}, 15`,
-      req.body.condition
+      req.body.condition ? req.body.condition : "1 = 1"
     );
     res.json({ ok: true, result: queryResult });
   } catch (err) {
@@ -24,18 +24,14 @@ router.post("/", async (req, res) => {
   }
 });
 
-// $route  POST api/submissions/number
+// $route  POST api/problems/number
 // @access public
 router.post("/number", async (req, res) => {
-  if (!req.body.condition) {
-    res.status(400).json(`Data is not in the correct format.`);
-    return;
-  }
   try {
     const queryResult = await connection.query(
-      `SELECT COUNT(*) AS number FROM submission_problem WHERE ?`,
-      req.body.condition
-		);
+      `SELECT COUNT(*) AS number FROM problem_status WHERE ?`,
+      req.body.condition ? req.body.condition : "1 = 1"
+    );
     res.json({ ok: true, number: queryResult[0].number });
   } catch (err) {
     res.status(500).json(err);

@@ -87,7 +87,7 @@ async function refreshUserDaily() {
 	WHERE user_id = ${row.id}`;
     const submissionNumber = (await connection.query(countSubmissionQuery))[0].submissionNumber;
     console.log(submissionNumber);
-    const recentAcSubmissionQuery = `SELECT submit_time, rating FROM submission_problem 
+    const recentAcSubmissionQuery = `SELECT submit_time, rating FROM view_submission_problem
 	WHERE user_id = ${row.id} AND submit_time > ${beginTimestamp} 
 	AND status = 'Accepted'`;
 

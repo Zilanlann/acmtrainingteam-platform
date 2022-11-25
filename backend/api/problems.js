@@ -14,7 +14,7 @@ router.post("/", async (req, res) => {
     const queryResult = await connection.query(
       `SELECT problem_id, leetcode_problem_id, codeforces_problem_id,
        title, title_slug, rating, tags, submit_number, accepted_number
-			 FROM problem_status WHERE ?
+			 FROM view_problem_status WHERE ?
 			 LIMIT ${15 * (req.body.page - 1)}, 15`,
       req.body.condition ? req.body.condition : "1 = 1"
     );
@@ -30,7 +30,7 @@ router.post("/", async (req, res) => {
 router.post("/number", async (req, res) => {
   try {
     const queryResult = await connection.query(
-      `SELECT COUNT(*) AS number FROM problem_status WHERE ?`,
+      `SELECT COUNT(*) AS number FROM view_problem_status WHERE ?`,
       req.body.condition ? req.body.condition : "1 = 1"
     );
     res.json({ ok: true, number: queryResult[0].number });

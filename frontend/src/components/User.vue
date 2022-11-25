@@ -1,14 +1,16 @@
 <template>
   <div>
-    <el-container v-if="!$route.params.userId">
+    <el-container v-if="!$route.params.userName">
       To view page of your user, please sign in first.
     </el-container>
     <div v-else>
-      <el-container>{{ $route.params.userId }} 's information</el-container>
+      <el-container>{{ $route.params.userName }} 's information</el-container>
       <el-divider />
       <el-container>Recent submissions </el-container>
       <el-button
-        @click="this.$router.push(`/submissions/${$route.params.userId}`)"
+        @click="
+          this.$router.push(`/submissions/user/${$route.params.userName}`)
+        "
         text
       >
         More

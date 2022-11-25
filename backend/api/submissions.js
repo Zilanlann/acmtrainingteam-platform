@@ -13,12 +13,30 @@ router.post("/", async (req, res) => {
   try {
     const queryResult = await connection.query(
       `SELECT submission_id, leetcode_problem_id, codeforces_problem_id, user_id,
-       submit_time, status, title, title_slug, rating, tags
+       user_name, submit_time, status, title, title_slug, rating, tags
 			 FROM submission_problem WHERE ?
-			 LIMIT ${15 * req.body.page}, 15`,
+			 LIMIT ${15 * (req.body.page - 1)}, 15`,
       req.body.condition
     );
     res.json({ ok: true, result: queryResult });
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
+
+// $route  POST api/submissions/number
+// @access public
+router.post("/number", async (req, res) => {
+  if (!req.body.condition) {
+    res.status(400).json(`Data is not in the correct format.`);
+    return;
+  }
+  try {
+    const queryResult = await connection.query(
+      `SELECT COUNT(*) AS number FROM submission_problem WHERE ?`,
+      req.body.condition
+		);
+    res.json({ ok: true, number: queryResult[0].number });
   } catch (err) {
     res.status(500).json(err);
   }

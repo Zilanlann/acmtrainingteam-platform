@@ -57,7 +57,7 @@
           </el-menu-item>
           <el-menu-item
             index="user"
-            :route="userId ? `/user/${userId}` : '/user'"
+            :route="userId ? `/user/${userName}` : '/user'"
           >
             <el-icon> <User /> </el-icon>
             <span>User</span>

@@ -4,14 +4,32 @@
       <el-page-header @back="this.$router.back()">
         <template #content>
           <span class="text-large font-600 mr-3">
-            {{ $route.params.userId }} 's submissions
+            <span> {{ $route.params.userName }} 's submissions </span>
           </span>
         </template>
       </el-page-header>
     </el-header>
     <el-divider style="margin: 0" />
-    <el-table :data="tableData" stripe style="width: 100%" align="center">
-      <el-table-column label="Problem">
+    <el-table :data="tableData" stripe style="width: 100%">
+      <el-table-column width="26px" style="padding: 0">
+        <template #default="scope">
+          <img
+            v-if="scope.row.title_slug"
+            src="../image/leetcode.png"
+            alt="L"
+            width="14"
+            height="14"
+          />
+          <img
+            v-else
+            src="../image/codeforces.png"
+            alt="C"
+            width="14"
+            height="14"
+          />
+        </template>
+      </el-table-column>
+      <el-table-column label="Problem" align="center">
         <template #default="scope">
           <el-link
             type="primary"
@@ -21,11 +39,21 @@
                 : `https://codeforces.com/problemset/problem/${scope.row.codeforces_problem_id}`
             "
             target="_blank"
-            >{{ scope.row.title }}</el-link
+          >
+            <span style="margin-left: 2px">{{ scope.row.title }}</span></el-link
           >
         </template>
       </el-table-column>
-      <el-table-column label="Rating">
+      <el-table-column label="User" align="center">
+        <template #default="scope">
+          <el-link
+            @click="this.$router.push(`/user/${$route.params.userName}`)"
+          >
+            {{ scope.row.user_name }}
+          </el-link>
+        </template>
+      </el-table-column>
+      <el-table-column label="Rating" align="center">
         <template #default="scope">
           <span :style="`color: ${getRatingColor(scope.row.rating)}`">
             <div :class="scope.row.rating >= 3000 ? `first-letter-black` : ``">
@@ -34,8 +62,7 @@
           </span>
         </template>
       </el-table-column>
-
-      <el-table-column label="Status">
+      <el-table-column label="Status" align="center">
         <template #default="scope">
           <el-link
             :type="getStatusColor(scope.row.status)"
@@ -51,14 +78,37 @@
           >
         </template>
       </el-table-column>
+      <el-table-column label="Tags" align="center">
+        <template #default="scope">
+          <el-link
+            v-for="item of scope.row.tags.split(',')"
+            :key="item"
+            :underline="false"
+          >
+            <el-tag
+              @click="this.$router.push(`/problem/tag/${item}`)"
+              style="margin: 0 2px"
+              size="small"
+            >
+              {{ item }}
+            </el-tag>
+          </el-link>
+        </template>
+      </el-table-column>
+      <el-table-column label="Time" align="center">
+        <template #default="scope">
+          {{ getLocalTime(scope.row.submit_time) }}
+        </template>
+      </el-table-column>
     </el-table>
     <el-row>
       <el-pagination
         style="margin: 0 auto"
-        :page-size="20"
+        v-model:current-page="page"
+        :page-size="15"
         :pager-count="11"
         layout="prev, pager, next"
-        :total="1000"
+        :total="itemNumber"
       />
     </el-row>
   </el-container>
@@ -69,6 +119,8 @@ export default {
   data() {
     return {
       tableData: [],
+      page: 1,
+      itemNumber: 1000,
     };
   },
   methods: {
@@ -78,7 +130,9 @@ export default {
           return "success";
         case "Wrong Answer":
         case "Time Limit Exceeded":
-          return "error";
+          return "danger";
+        case "Testing":
+          return "primary";
         default:
           return "warning";
       }
@@ -102,23 +156,46 @@ export default {
       }
       return color;
     },
+    getLocalTime(time) {
+      return new Date(time * 1000).toLocaleString()
+    },
+    async getTableData() {
+      try {
+        const res = await this.$http.post("/api/submissions", {
+          condition: {
+            user_name: this.$route.params.userName,
+          },
+          page: parseInt(this.page),
+        });
+        if (res.data.ok) {
+          this.tableData = res.data.result;
+        }
+      } catch (err) {
+        console.error(err);
+        this.$message.error(err);
+      }
+    },
+  },
+  watch: {
+    page() {
+      this.getTableData();
+    },
   },
   async created() {
     try {
-      const res = await this.$http.post("/api/submissions", {
+      const res = await this.$http.post("/api/submissions/number", {
         condition: {
-          user_id: parseInt(this.$route.params.userId),
+          user_name: this.$route.params.userName,
         },
-        page: 0,
       });
       if (res.data.ok) {
-        this.tableData = res.data.result;
-        console.log(this.tableData);
+        this.itemNumber = res.data.number;
       }
     } catch (err) {
       console.error(err);
       this.$message.error(err);
     }
+    this.getTableData();
   },
 };
 </script>

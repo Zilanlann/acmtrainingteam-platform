@@ -125,16 +125,7 @@ export default {
     },
   },
   async created() {
-    try {
-      const res = await this.$http.get("/api/test");
-      if (res.data !== 2) {
-        this.$message.error("The database is not working properly.");
-      } else {
-        console.log("Backend is OK.");
-      }
-    } catch (err) {
-      this.$message.error(err);
-    }
+    this.refreshUser();
   },
 };
 </script>

@@ -96,5 +96,11 @@ export default {
       }
     },
   },
+  created() {
+    console.log(123);
+    if (this.$cookies.get("token")) {
+      this.$router.replace("/ranking");
+    }
+  },
 };
 </script>

@@ -7,8 +7,6 @@ import * as ElementPlusIconsVue from "@element-plus/icons-vue";
 import "element-plus/dist/index.css";
 import axios from "axios";
 
-console.log(ElementPlus.ElMessage);
-
 axios.defaults.baseURL = "http://localhost:5000/";
 
 const app = createApp(App);

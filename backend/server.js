@@ -15,11 +15,6 @@ app.use("/api/submissions", submissions);
 
 const port = config.get("serverPort") || 5000;
 
-app.get("/api/test", async (req, res) => {
-  const addResult = await connection.query(`SELECT 1 + 1 AS solution`);
-  res.json(addResult[0].solution);
-});
-
 app.listen(port, () => {
   console.log(`Server is running on PORT ${port}.`);
 });

@@ -4,14 +4,23 @@
       <el-page-header @back="this.$router.back()">
         <template #content>
           <span class="text-large font-600 mr-3">
-            <span> {{ $route.params.userName }} 's submissions </span>
+            <span v-if="$route.params.userName">
+              {{ $route.params.userName }} 's submissions
+            </span>
+            <span v-if="$route.params.problemId">
+              Submissions of problem:
+              {{ tableData[0]?.title }}</span
+            >
           </span>
         </template>
       </el-page-header>
     </el-header>
     <el-divider style="margin: 0" />
     <el-table :data="tableData" stripe style="width: 100%">
-      <el-table-column width="26px" style="padding: 0">
+      <el-table-column
+        width="26px"
+        style="padding: 0"
+      >
         <template #default="scope">
           <img
             v-if="scope.row.title_slug"
@@ -29,7 +38,10 @@
           />
         </template>
       </el-table-column>
-      <el-table-column label="Problem" align="center">
+      <el-table-column
+        label="Problem"
+        align="center"
+      >
         <template #default="scope">
           <el-link
             type="primary"
@@ -39,16 +51,16 @@
                 : `https://codeforces.com/problemset/problem/${scope.row.codeforces_problem_id}`
             "
             target="_blank"
-          >
-            <span style="margin-left: 2px">{{ scope.row.title }}</span></el-link
+            >{{ scope.row.title }}</el-link
           >
         </template>
       </el-table-column>
-      <el-table-column label="User" align="center">
+      <el-table-column
+        label="User"
+        align="center"
+      >
         <template #default="scope">
-          <el-link
-            @click="this.$router.push(`/user/${$route.params.userName}`)"
-          >
+          <el-link @click="this.$router.push(`/user/${scope.row.user_name}`)">
             {{ scope.row.user_name }}
           </el-link>
         </template>
@@ -122,6 +134,7 @@ export default {
       tableData: [],
       page: 1,
       itemNumber: 1000,
+      condition: {},
     };
   },
   methods: {
@@ -180,9 +193,7 @@ export default {
     async getTableData() {
       try {
         const res = await this.$http.post("/api/submissions", {
-          condition: {
-            user_name: this.$route.params.userName,
-          },
+          condition: this.condition,
           page: parseInt(this.page),
         });
         if (res.data.ok) {
@@ -193,6 +204,13 @@ export default {
         this.$message.error(err);
       }
     },
+    initializeCondition() {
+      if (this.$route.params.userName) {
+        this.condition.user_name = this.$route.params.userName;
+      } else if (this.$route.params.problemId) {
+        this.condition.problem_id = this.$route.params.problemId;
+      }
+    },
   },
   watch: {
     page() {
@@ -200,11 +218,10 @@ export default {
     },
   },
   async created() {
+    this.initializeCondition();
     try {
       const res = await this.$http.post("/api/submissions/number", {
-        condition: {
-          user_name: this.$route.params.userName,
-        },
+        condition: this.condition,
       });
       if (res.data.ok) {
         this.itemNumber = res.data.number;

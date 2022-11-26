@@ -12,15 +12,15 @@ router.post("/", async (req, res) => {
   }
   try {
     const queryResult = await connection.query(
-      `SELECT problem_id, leetcode_problem_id, codeforces_problem_id,
-       title, title_slug, rating, tags, submit_number, accepted_number
-			 FROM view_problem_status WHERE ?
+      `SELECT DISTINCT problem_id, leetcode_problem_id, codeforces_problem_id,
+       title, title_slug, rating, tags
+			 FROM view_problem_problem_tag WHERE ?
 			 LIMIT ${15 * (req.body.page - 1)}, 15`,
       req.body.condition ? req.body.condition : "1 = 1"
     );
     res.json({ ok: true, result: queryResult });
-	} catch (err) {
-		console.error(err);
+  } catch (err) {
+    console.error(err);
     res.status(500).json(err);
   }
 });
@@ -30,12 +30,12 @@ router.post("/", async (req, res) => {
 router.post("/number", async (req, res) => {
   try {
     const queryResult = await connection.query(
-      `SELECT COUNT(*) AS number FROM view_problem_status WHERE ?`,
+      `SELECT COUNT(DISTINCT problem_id) AS number FROM view_problem_problem_tag WHERE ?`,
       req.body.condition ? req.body.condition : "1 = 1"
     );
     res.json({ ok: true, number: queryResult[0].number });
-	} catch (err) {
-		console.error(err);
+  } catch (err) {
+    console.error(err);
     res.status(500).json(err);
   }
 });

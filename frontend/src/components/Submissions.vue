@@ -89,7 +89,7 @@
             :underline="false"
           >
             <el-tag
-              @click="this.$router.push(`/problem/tag/${item}`)"
+              @click="this.$router.push(`/problems/tag/${item}`)"
               style="margin: 0 2px"
               size="small"
             >

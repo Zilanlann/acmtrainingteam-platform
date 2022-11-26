@@ -50,7 +50,7 @@
             :underline="false"
           >
             <el-tag
-              @click="this.$router.push(`/problem/tag/${item}`)"
+              @click="this.$router.push(`/problems/tag/${item}`)"
               style="margin: 0 2px"
               size="small"
             >
@@ -59,15 +59,17 @@
           </el-link>
         </template>
       </el-table-column>
-      <el-table-column label="AC/Submit" align="center">
+      <el-table-column label="Submissions" align="center">
         <template #default="scope">
-          <el-link
+          <el-button
             @click="
               this.$router.push(`/submissions/problem/${scope.row.problem_id}`)
             "
+            type="info"
+            plain
+            size="small"
+            >Details</el-button
           >
-            {{ scope.row.accepted_number }}/{{ scope.row.submit_number }}
-          </el-link>
         </template>
       </el-table-column>
     </el-table>
@@ -127,24 +129,40 @@ export default {
         this.$message.error(err);
       }
     },
+    async getPageNumber() {
+      try {
+        const res = await this.$http.post("/api/problems/number", {
+          condition: this.condition,
+        });
+        if (res.data.ok) {
+          this.itemNumber = res.data.number;
+        }
+      } catch (err) {
+        console.error(err);
+        this.$message.error(err);
+      }
+    },
+    initializeCondition() {
+      if (this.$route.params.tag) {
+        this.condition = {
+          tag: this.$route.params.tag,
+        };
+      }
+    },
   },
   watch: {
     page() {
       this.getTableData();
     },
+    $route() {
+      this.initializeCondition();
+      this.getPageNumber();
+      this.getTableData();
+    },
   },
   async created() {
-    try {
-      const res = await this.$http.post("/api/problems/number", {
-        condition: this.condition,
-      });
-      if (res.data.ok) {
-        this.itemNumber = res.data.number;
-      }
-    } catch (err) {
-      console.error(err);
-      this.$message.error(err);
-    }
+    this.initializeCondition();
+    this.getPageNumber();
     this.getTableData();
   },
 };

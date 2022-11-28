@@ -1,5 +1,16 @@
 <template>
   <el-container style="height: 100%; width: 100%">
+    <el-header>
+      <el-page-header v-if="$route.params.tag" @back="this.$router.back()">
+        <template #content>
+          <span class="text-large font-600 mr-3">
+            <span v-if="$route.params.tag">
+              Problem of tag {{ $route.params.tag }}
+            </span>
+          </span>
+        </template>
+      </el-page-header>
+    </el-header>
     <el-table :data="tableData" stripe style="width: 100%">
       <el-table-column width="26px" style="padding: 0">
         <template #default="scope">

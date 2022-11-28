@@ -16,7 +16,7 @@ const CODEFORCES_STATUS_TRANSFORMER = {
   INPUT_PREPARATION_CRASHED: "Input Preparation Crashed",
   CHALLENGED: "Challenged",
   REJECTED: "Rejected",
-  TESTING: "Testing"
+  TESTING: "Testing",
 };
 
 export default class CodeforcesTransformer {
@@ -27,7 +27,9 @@ export default class CodeforcesTransformer {
     const problemTag = [];
 
     for (const submission of submissionArray) {
-      const problemId = `${submission.problem.contestId}/${submission.problem.index}`;
+      const problemId = `${submission.problem.contestId ? submission.problem.contestId : 99999}/${
+        submission.problem.index
+      }`;
       codeforcesSubmission.push([
         submission.id,
         userId,

@@ -11,9 +11,9 @@ export default class CodeforcesUser {
     this.handle = handle;
   }
 
-  async getSubmissionList(from = 1, count) {
-    const url = `https://codeforces.com/api/user.status?handle=${this.handle}&from=${from}`;
-    if (arguments.length >= 2) {
+  async getSubmissionList(count, from = 1) {
+    let url = `https://codeforces.com/api/user.status?handle=${this.handle}&from=${from}`;
+    if (arguments.length >= 1) {
       url += `&count=${count}`;
     }
 

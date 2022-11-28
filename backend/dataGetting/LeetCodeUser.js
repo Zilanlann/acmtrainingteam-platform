@@ -30,7 +30,8 @@ export default class LeetCodeUser {
     const response = await fetch("https://leetcode.cn/graphql/", requestOptions);
     const result = await response.json();
     if (result.data.recentSubmissions.length == 0) {
-      throw new Error(`LeetCode user ${this.userName} may not exist.`);
+      throw new Error(`LeetCode user ${this.userName} may not exist, 
+			or this user forbid to show his recent submissions.`);
     }
     return result.data.recentSubmissions;
   }

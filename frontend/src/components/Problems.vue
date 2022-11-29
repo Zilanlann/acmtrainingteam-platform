@@ -92,6 +92,7 @@
 
 <script>
 import { getRatingColor, getProblemUrl } from "@/logic/dataShowing";
+import { getData } from "@/logic/dataGetting";
 export default {
   data() {
     return {
@@ -104,32 +105,28 @@ export default {
   methods: {
     getRatingColor,
     getProblemUrl,
-    async getTableData() {
-      try {
-        const res = await this.$http.post("/api/problems", {
+    getTableData() {
+      getData(
+        "/api/problems",
+        {
           condition: this.condition,
           page: parseInt(this.page),
-        });
-        if (res.data.ok) {
-          this.tableData = res.data.result;
+        },
+        (resData) => {
+          this.tableData = resData.result;
         }
-      } catch (err) {
-        console.error(err);
-        this.$message.error(err);
-      }
+      );
     },
     async getPageNumber() {
-      try {
-        const res = await this.$http.post("/api/problems/number", {
+      getData(
+        "/api/problems/number",
+        {
           condition: this.condition,
-        });
-        if (res.data.ok) {
-          this.itemNumber = res.data.number;
+        },
+        (resData) => {
+          this.itemNumber = resData.number;
         }
-      } catch (err) {
-        console.error(err);
-        this.$message.error(err);
-      }
+      );
     },
     initializeCondition() {
       if (this.$route.params.tag) {

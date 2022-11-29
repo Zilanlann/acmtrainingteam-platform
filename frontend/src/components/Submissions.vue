@@ -115,6 +115,7 @@ import {
   getSubmissionUrl,
   getProblemUrl,
 } from "@/logic/dataShowing";
+import { getData } from "@/logic/dataGetting";
 export default {
   data() {
     return {
@@ -130,20 +131,6 @@ export default {
     getStatusColor,
     getSubmissionUrl,
     getProblemUrl,
-    async getTableData() {
-      try {
-        const res = await this.$http.post("/api/submissions", {
-          condition: this.condition,
-          page: parseInt(this.page),
-        });
-        if (res.data.ok) {
-          this.tableData = res.data.result;
-        }
-      } catch (err) {
-        console.error(err);
-        this.$message.error(err);
-      }
-    },
     initializeCondition() {
       if (this.$route.params.userName) {
         this.condition.user_name = this.$route.params.userName;
@@ -154,23 +141,39 @@ export default {
   },
   watch: {
     page() {
-      this.getTableData();
+      getData(
+        "/api/submissions",
+        {
+          condition: this.condition,
+          page: parseInt(this.page),
+        },
+        (resData) => {
+          this.tableData = resData.result;
+        }
+      );
     },
   },
   async created() {
     this.initializeCondition();
-    try {
-      const res = await this.$http.post("/api/submissions/number", {
+    getData(
+      "/api/submissions/number",
+      {
         condition: this.condition,
-      });
-      if (res.data.ok) {
-        this.itemNumber = res.data.number;
+      },
+      (resData) => {
+        this.itemNumber = resData.number;
       }
-    } catch (err) {
-      console.error(err);
-      this.$message.error(err);
-    }
-    this.getTableData();
+    );
+    getData(
+      "/api/submissions",
+      {
+        condition: this.condition,
+        page: parseInt(this.page),
+      },
+      (resData) => {
+        this.tableData = resData.result;
+      }
+    );
   },
 };
 </script>

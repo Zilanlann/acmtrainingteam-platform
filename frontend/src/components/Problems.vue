@@ -1,12 +1,10 @@
 <template>
   <el-container style="height: 100%; width: 100%">
-    <el-header>
-      <el-page-header v-if="$route.params.tag" @back="this.$router.back()">
+    <el-header v-if="$route.params.tag">
+      <el-page-header @back="this.$router.back()">
         <template #content>
           <span class="text-large font-600 mr-3">
-            <span v-if="$route.params.tag">
-              Problem of tag {{ $route.params.tag }}
-            </span>
+            <span> Problem of tag "{{ $route.params.tag }}" </span>
           </span>
         </template>
       </el-page-header>
@@ -34,11 +32,7 @@
         <template #default="scope">
           <el-link
             type="primary"
-            :href="
-              scope.row.title_slug
-                ? `https://leetcode.cn/problems/${scope.row.title_slug}`
-                : `https://codeforces.com/problemset/problem/${scope.row.codeforces_problem_id}`
-            "
+            :href="getProblemUrl(scope.row)"
             target="_blank"
             >{{ scope.row.title }}</el-link
           >
@@ -125,6 +119,16 @@ export default {
         color = "#ff0000";
       }
       return color;
+    },
+    getProblemUrl(row) {
+      if (row.title_slug) {
+        return `https://leetcode.cn/problems/${row.title_slug}`;
+      }
+      const [contestId, index] = row.codeforces_problem_id.split("/");
+      if (contestId.length >= 6) {
+        return `https://codeforces.com/gym/${contestId}/problem/${index}`;
+      }
+      return `https://codeforces.com/problemset/problem/${row.codeforces_problem_id}`;
     },
     async getTableData() {
       try {

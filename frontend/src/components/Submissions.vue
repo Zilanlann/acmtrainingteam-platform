@@ -39,11 +39,7 @@
         <template #default="scope">
           <el-link
             type="primary"
-            :href="
-              scope.row.title_slug
-                ? `https://leetcode.cn/problems/${scope.row.title_slug}`
-                : `https://codeforces.com/problemset/problem/${scope.row.codeforces_problem_id}`
-            "
+            :href="getProblemUrl(scope.row)"
             target="_blank"
             >{{ scope.row.title }}</el-link
           >
@@ -69,13 +65,7 @@
         <template #default="scope">
           <el-link
             :type="getStatusColor(scope.row.status)"
-            :href="
-              scope.row.title_slug
-                ? `https://leetcode.cn/submissions/detail/${scope.row.submission_id}`
-                : `https://codeforces.com/contest/${
-                    scope.row.codeforces_problem_id.split('/')[0]
-                  }/submission/${scope.row.submission_id}`
-            "
+            :href="getSubmissionUrl(scope.row)"
             target="_blank"
             >{{ scope.row.status }}</el-link
           >
@@ -180,6 +170,26 @@ export default {
         }
       }
       return "Now";
+    },
+    getProblemUrl(row) {
+      if (row.title_slug) {
+        return `https://leetcode.cn/problems/${row.title_slug}`;
+      }
+      const [contestId, index] = row.codeforces_problem_id.split("/");
+      if (contestId.length >= 6) {
+        return `https://codeforces.com/gym/${contestId}/problem/${index}`;
+      }
+      return `https://codeforces.com/problemset/problem/${row.codeforces_problem_id}`;
+    },
+    getSubmissionUrl(row) {
+      if (row.title_slug) {
+        return `https://leetcode.cn/submissions/detail/${row.submission_id}`;
+      }
+      const contestId = row.codeforces_problem_id.split("/")[0];
+      if (contestId.length >= 6) {
+        return `https://codeforces.com/gym/${contestId}/submission/${row.submission_id}`;
+      }
+      return `https://codeforces.com/contest/${contestId}/submission/${row.submission_id}`;
     },
     async getTableData() {
       try {

@@ -91,6 +91,7 @@
 </template>
 
 <script>
+import { getRatingColor, getProblemUrl } from "@/logic/dataShowing";
 export default {
   data() {
     return {
@@ -101,35 +102,8 @@ export default {
     };
   },
   methods: {
-    getRatingColor(rating) {
-      let color;
-      if (rating < 1200) {
-        color = "#808080";
-      } else if (rating >= 1200 && rating < 1400) {
-        color = "#008000";
-      } else if (rating >= 1400 && rating < 1600) {
-        color = "#03a89e";
-      } else if (rating >= 1600 && rating < 1900) {
-        color = "#0000ff";
-      } else if (rating >= 1900 && rating < 2100) {
-        color = "#aa00aa";
-      } else if (rating >= 2100 && rating < 2400) {
-        color = "#ff8c00";
-      } else if (rating >= 2400) {
-        color = "#ff0000";
-      }
-      return color;
-    },
-    getProblemUrl(row) {
-      if (row.title_slug) {
-        return `https://leetcode.cn/problems/${row.title_slug}`;
-      }
-      const [contestId, index] = row.codeforces_problem_id.split("/");
-      if (contestId.length >= 6) {
-        return `https://codeforces.com/gym/${contestId}/problem/${index}`;
-      }
-      return `https://codeforces.com/problemset/problem/${row.codeforces_problem_id}`;
-    },
+    getRatingColor,
+    getProblemUrl,
     async getTableData() {
       try {
         const res = await this.$http.post("/api/problems", {

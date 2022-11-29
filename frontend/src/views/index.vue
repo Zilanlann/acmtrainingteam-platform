@@ -117,8 +117,8 @@ export default {
       this.asideWidth = this.menuCollapsed ? "65px" : "150px";
     },
     refreshUser() {
-      this.userName = this.$cookies.get("token").name;
-      this.userId = this.$cookies.get("token").id;
+      this.userName = this.$cookies.get("token")?.name;
+      this.userId = this.$cookies.get("token")?.id;
     },
     refreshMenu() {
       this.menuKey++;

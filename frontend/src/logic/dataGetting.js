@@ -1,16 +1,26 @@
 import axios from "axios";
 import { ElMessage } from "element-plus";
 
-async function getData(postUrl, requestBody, successCallback) {
+async function post(
+  postUrl,
+  requestBody,
+  successCallback,
+  errorCallback = (error) => {
+    console.error(error);
+    ElMessage.error(error);
+  }
+) {
   try {
-    const res = await axios.post(postUrl, requestBody);
-    if (res.data.ok) {
-      successCallback(res.data);
+    const result = await axios.post(postUrl, requestBody);
+    if (result.data.ok) {
+      successCallback(result.data.result);
+    } else if (result.data.error) {
+      errorCallback(result.data.error);
     }
-  } catch (err) {
-    console.error(err);
-    ElMessage.error(err);
+  } catch (error) {
+    console.error(error);
+    ElMessage.error(error);
   }
 }
 
-export { getData };
+export { post };

@@ -115,7 +115,7 @@ import {
   getSubmissionUrl,
   getProblemUrl,
 } from "@/logic/dataShowing";
-import { getData } from "@/logic/dataGetting";
+import { post } from "@/logic/dataGetting";
 export default {
   data() {
     return {
@@ -141,37 +141,37 @@ export default {
   },
   watch: {
     page() {
-      getData(
+      post(
         "/api/submissions",
         {
           condition: this.condition,
           page: parseInt(this.page),
         },
-        (resData) => {
-          this.tableData = resData.result;
+        (result) => {
+          this.tableData = result;
         }
       );
     },
   },
   async created() {
     this.initializeCondition();
-    getData(
+    post(
       "/api/submissions/number",
       {
         condition: this.condition,
       },
-      (resData) => {
-        this.itemNumber = resData.number;
+      (result) => {
+        this.itemNumber = result;
       }
     );
-    getData(
+    post(
       "/api/submissions",
       {
         condition: this.condition,
         page: parseInt(this.page),
       },
-      (resData) => {
-        this.tableData = resData.result;
+      (result) => {
+        this.tableData = result;
       }
     );
   },

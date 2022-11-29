@@ -7,7 +7,7 @@ const router = express.Router();
 // @access public
 router.post("/", async (req, res) => {
   if (!(req.body.condition && req.body.page)) {
-    res.status(400).json(`Data is not in the correct format.`);
+    res.json({ ok: false, error: `Data is not in the correct format.` });
     return;
   }
   try {
@@ -19,9 +19,9 @@ router.post("/", async (req, res) => {
       req.body.condition
     );
     res.json({ ok: true, result: queryResult });
-	} catch (err) {
-		console.error(err);
-    res.status(500).json(err);
+  } catch (error) {
+    console.error(error);
+    res.json({ ok: false, error });
   }
 });
 
@@ -29,7 +29,7 @@ router.post("/", async (req, res) => {
 // @access public
 router.post("/number", async (req, res) => {
   if (!req.body.condition) {
-    res.status(400).json(`Data is not in the correct format.`);
+    res.json({ ok: false, error: `Data is not in the correct format.` });
     return;
   }
   try {
@@ -37,10 +37,10 @@ router.post("/number", async (req, res) => {
       `SELECT COUNT(*) AS number FROM view_submission_problem WHERE ?`,
       req.body.condition
     );
-    res.json({ ok: true, number: queryResult[0].number });
-	} catch (err) {
-		console.error(err);
-    res.status(500).json(err);
+    res.json({ ok: true, result: queryResult[0].number });
+  } catch (error) {
+    console.error(error);
+    res.json({ ok: false, error });
   }
 });
 

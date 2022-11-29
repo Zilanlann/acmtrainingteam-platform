@@ -1,4 +1,4 @@
-import express, { query } from "express";
+import express from "express";
 import connection from "../dbConnection.js";
 
 const router = express.Router();
@@ -8,10 +8,13 @@ const router = express.Router();
 router.post("/register", async (req, res) => {
   try {
     await connection.query(`INSERT INTO user SET ?`, req.body);
-    res.send({ ok: true });
-	} catch (err) {
-		console.error(err);
-    res.send({ ok: false, err });
+    res.send({
+      ok: true,
+      result: `User ${req.body.name} has registered successfully.`,
+    });
+  } catch (error) {
+    console.error(error);
+    res.json({ ok: false, error });
   }
 });
 
@@ -28,17 +31,17 @@ router.post("/signin", async (req, res) => {
       [req.body.type, req.body.usernameOrEmail]
     );
     if (selectResult.length === 0) {
-      res.send({ ok: false, message: "This user has not registered." });
+      res.send({ ok: false, error: "This user has not registered." });
       return;
     }
     if (selectResult[0].password === req.body.password) {
-      res.send({ ok: true, token: selectResult[0] });
+      res.send({ ok: true, result: selectResult[0] });
     } else {
-      res.send({ ok: false, message: "The password is not correct." });
+      res.send({ ok: false, error: "The password is not correct." });
     }
-	} catch (err) {
-		console.error(err);
-    res.status(500).json(err);
+  } catch (error) {
+    console.error(error);
+    res.json({ ok: false, error });
   }
 });
 

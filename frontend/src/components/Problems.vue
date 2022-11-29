@@ -92,7 +92,7 @@
 
 <script>
 import { getRatingColor, getProblemUrl } from "@/logic/dataShowing";
-import { getData } from "@/logic/dataGetting";
+import { post } from "@/logic/dataGetting";
 export default {
   data() {
     return {
@@ -106,25 +106,25 @@ export default {
     getRatingColor,
     getProblemUrl,
     getTableData() {
-      getData(
+      post(
         "/api/problems",
         {
           condition: this.condition,
           page: parseInt(this.page),
         },
-        (resData) => {
-          this.tableData = resData.result;
+        (result) => {
+          this.tableData = result;
         }
       );
     },
     async getPageNumber() {
-      getData(
+      post(
         "/api/problems/number",
         {
           condition: this.condition,
         },
-        (resData) => {
-          this.itemNumber = resData.number;
+        (result) => {
+          this.itemNumber = result;
         }
       );
     },

@@ -38,6 +38,7 @@
 </template>
 
 <script>
+import { post } from "@/logic/dataGetting";
 export default {
   data() {
     return {
@@ -76,24 +77,16 @@ export default {
         usernameOrEmail: this.form.usernameOrEmail,
         password: this.form.password,
       };
-      try {
-        const res = await this.$http.post("/api/user/signin", reqBody);
-        if (res.data.ok === true) {
-          this.$cookies.set("token", res.data.token);
-          this.$emit("refreshUser");
-          this.$message.success({
-            message: "You have signed in successfully.",
-            duration: 1000,
-          });
-          this.$router.push("/ranking");
-          this.$emit("refreshMenu");
-        } else {
-          this.$message.error(res.data.message);
-        }
-      } catch (err) {
-        console.error(err);
-        this.$message.error(err);
-      }
+      post("/api/user/signin", reqBody, (result) => {
+        this.$cookies.set("token", result);
+        this.$message.success({
+          message: "You have signed in successfully.",
+          duration: 1000,
+        });
+        this.$router.push("/ranking");
+        this.$emit("refreshMenu");
+        this.$emit("refreshUser");
+      });
     },
   },
   created() {

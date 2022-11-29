@@ -31,7 +31,7 @@
         />
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="submit">Register</el-button>
+        <el-button type="primary" @click="onSubmit">Register</el-button>
         <el-button
           style="margin-left: 30px"
           @click="this.$router.push(`/signin`)"
@@ -43,6 +43,7 @@
 </template>
 
 <script>
+import { post } from "@/logic/dataGetting";
 export default {
   data() {
     return {
@@ -124,7 +125,7 @@ export default {
     };
   },
   methods: {
-    submit() {
+    onSubmit() {
       const formEl = this.$refs.formRef;
       if (!formEl) return;
       formEl.validate(async (valid) => {
@@ -136,24 +137,26 @@ export default {
             qq: this.form.qq,
             about: this.form.about,
           };
-          const res = await this.$http.post("/api/user/register", reqBody);
-          if (res.data.ok) {
-            this.$message.success("Register successfully.");
-            this.$router.push(`/signin`);
-          } else if (res.data?.err?.sqlMessage) {
-            if (res.data.err.sqlMessage.indexOf("user.user_name_uindex") !== -1)
-              this.$message.error(
-                `The username ${reqBody.name} has registered by others.`
-              );
-            else {
-              this.$message.error(
-                `The email ${reqBody.email} has registered by others. 
+          post(
+            "/api/user/register",
+            reqBody,
+            (result) => {
+              this.$message.success(result);
+              this.$router.push(`/signin`);
+            },
+            (error) => {
+              if (error.sqlMessage.indexOf("user.user_name_uindex") !== -1) {
+                this.$message.error(
+                  `The username ${reqBody.name} has registered by others.`
+                );
+              } else {
+                this.$message.error(
+                  `The email ${reqBody.email} has registered by others. 
 								If it was not your operation, please contact the administrator.`
-              );
+                );
+              }
             }
-          } else {
-            this.$message.error("Fail to register, backend has some problem.");
-          }
+          );
         } else {
           this.$message.error(
             "Fail to register, please check your information."

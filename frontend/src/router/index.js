@@ -24,6 +24,7 @@ const routes = [
       { path: "/discussion", component: Discussion },
       { path: "/following", component: Following },
       { path: "/problems", component: Problems },
+      { path: "/problems/tag", component: Problems },
       { path: "/problems/tag/:tag", component: Problems },
       { path: "/settings", component: Settings },
       { path: "/user", component: User },

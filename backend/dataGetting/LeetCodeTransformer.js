@@ -31,6 +31,7 @@ export default class LeetCodeTransformer {
         submission.submit_time,
         parseInt(submission.problem?.problem_id),
         LEETCODE_STATUS_TRANSFORMER[submission.status],
+        DIFFICULTY_RATING_TRANSFORMER[submission.problem?.difficulty],
       ]);
 
       if (problemSet.has(submission.problem?.problem_id)) {

@@ -21,12 +21,12 @@ async function refreshCodeforces() {
           CodeforcesTransformer.transformSubmissions(submissionList, row.id);
 
         const submissionQuery = `INSERT INTO submission 
-				(submission_id, user_id, submit_time, codeforces_problem_id, status)
-				VALUES ${connection.escape(codeforcesSubmission)}
-				ON DUPLICATE KEY UPDATE status = VALUES(status);`;
+				(submission_id, user_id, submit_time, codeforces_problem_id, status, rating)
+				VALUES ${connection.escape(codeforcesSubmission)} ON DUPLICATE KEY UPDATE
+				rating = VALUES(rating), status = VALUES(status);`;
         connection.query(submissionQuery);
 
-        const problemQuery = `INSERT IGNORE INTO problem
+        const problemQuery = `INSERT INTO problem
 				(codeforces_problem_id, title, rating, tags)
 				VALUES ${connection.escape(codeforcesProblem)}
 				ON DUPLICATE KEY UPDATE rating = VALUES(rating),
@@ -40,10 +40,11 @@ async function refreshCodeforces() {
         connection.query(tagQuery);
 
         console.log(`Codeforces: ${row.codeforces_handle}`);
-      } catch (err) {
+			} catch (err) {
+				console.error(`ERROR of Codeforces: ${row.codeforces_handle}`);
         console.error(err);
       }
-    }, index * 1000);
+    }, index * 2000);
   });
 }
 
@@ -62,9 +63,9 @@ async function refreshLeetcode() {
         LeetCodeTransformer.transformSubmissions(submissionList, row.id);
 
       const submissionQuery = `INSERT INTO submission 
-		(submission_id, user_id, submit_time, leetcode_problem_id, status)
-		VALUES  ${connection.escape(leetCodeSubmission)}
-		ON DUPLICATE KEY UPDATE status = VALUES(status)`;
+		(submission_id, user_id, submit_time, leetcode_problem_id, status, rating)
+		VALUES  ${connection.escape(leetCodeSubmission)} ON DUPLICATE KEY UPDATE
+		rating = VALUES(rating), status = VALUES(status)`;
       connection.query(submissionQuery);
 
       const problemQuery =
@@ -80,7 +81,8 @@ async function refreshLeetcode() {
       connection.query(tagQuery);
 
       console.log(`LeetCode: ${row.leetcode_handle}`);
-    } catch (err) {
+		} catch (err) {
+			console.error(`ERROR of LeetCode: ${row.leetcode_handle}`);
       console.error(err);
     }
   });

@@ -27,15 +27,16 @@ export default class CodeforcesTransformer {
     const problemTag = [];
 
     for (const submission of submissionArray) {
-      const problemId = `${submission.problem.contestId ? submission.problem.contestId : 99999}/${
-        submission.problem.index
-      }`;
+      const problemId = `${
+        submission.problem.contestId ? submission.problem.contestId : 99999
+      }/${submission.problem.index}`;
       codeforcesSubmission.push([
         submission.id,
         userId,
         submission.creationTimeSeconds,
         problemId,
         CODEFORCES_STATUS_TRANSFORMER[submission.verdict],
+        submission.problem?.rating,
       ]);
 
       if (problemSet.has(submission.problem?.problem_id)) {

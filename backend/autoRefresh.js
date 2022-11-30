@@ -24,20 +24,20 @@ async function refreshCodeforces() {
 				(submission_id, user_id, submit_time, codeforces_problem_id, status)
 				VALUES ${connection.escape(codeforcesSubmission)}
 				ON DUPLICATE KEY UPDATE status = VALUES(status);`;
-        await connection.query(submissionQuery);
+        connection.query(submissionQuery);
 
         const problemQuery = `INSERT IGNORE INTO problem
 				(codeforces_problem_id, title, rating, tags)
 				VALUES ${connection.escape(codeforcesProblem)}
 				ON DUPLICATE KEY UPDATE rating = VALUES(rating),
 				tags = VALUES(tags);`;
-        await connection.query(problemQuery);
+        connection.query(problemQuery);
 
         const tagQuery =
           `INSERT IGNORE INTO problem_tag
 	 			(codeforces_problem_id, tag)
 	 			VALUES ` + connection.escape(problemTag);
-        await connection.query(tagQuery);
+        connection.query(tagQuery);
 
         console.log(`Codeforces: ${row.codeforces_handle}`);
       } catch (err) {
@@ -65,19 +65,19 @@ async function refreshLeetcode() {
 		(submission_id, user_id, submit_time, leetcode_problem_id, status)
 		VALUES  ${connection.escape(leetCodeSubmission)}
 		ON DUPLICATE KEY UPDATE status = VALUES(status)`;
-      await connection.query(submissionQuery);
+      connection.query(submissionQuery);
 
       const problemQuery =
         `INSERT IGNORE INTO problem
 		(leetcode_problem_id, title, title_slug, rating, tags)
 		VALUES ` + connection.escape(leetCodeProblem);
-      await connection.query(problemQuery);
+      connection.query(problemQuery);
 
       const tagQuery =
         `INSERT IGNORE INTO problem_tag
 	 	(leetcode_problem_id, tag)
 	 	VALUES ` + connection.escape(problemTag);
-      await connection.query(tagQuery);
+      connection.query(tagQuery);
 
       console.log(`LeetCode: ${row.leetcode_handle}`);
     } catch (err) {

@@ -1,5 +1,6 @@
 import express from "express";
 import connection from "../dbConnection.js";
+import { result, error } from "./tools/apiDataFormat.js";
 
 const router = express.Router();
 
@@ -7,7 +8,7 @@ const router = express.Router();
 // @access public
 router.post("/", async (req, res) => {
   if (!(req.body.condition && req.body.page)) {
-    res.json({ ok: false, error: `Data is not in the correct format.` });
+    res.json(error(`Data is not in the correct format.`));
     return;
   }
   try {
@@ -18,10 +19,10 @@ router.post("/", async (req, res) => {
 			 LIMIT ${15 * (req.body.page - 1)}, 15`,
       req.body.condition
     );
-    res.json({ ok: true, result: queryResult });
+    res.json(result(queryResult));
   } catch (error) {
     console.error(error);
-    res.json({ ok: false, error });
+    res.json(error(error));
   }
 });
 
@@ -29,7 +30,7 @@ router.post("/", async (req, res) => {
 // @access public
 router.post("/number", async (req, res) => {
   if (!req.body.condition) {
-    res.json({ ok: false, error: `Data is not in the correct format.` });
+    res.json(error(`Data is not in the correct format.`));
     return;
   }
   try {
@@ -37,10 +38,10 @@ router.post("/number", async (req, res) => {
       `SELECT COUNT(*) AS number FROM view_submission_problem WHERE ?`,
       req.body.condition
     );
-    res.json({ ok: true, result: queryResult[0].number });
+    res.json(result(queryResult[0].number));
   } catch (error) {
     console.error(error);
-    res.json({ ok: false, error });
+    res.json(error(error));
   }
 });
 

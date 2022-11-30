@@ -1,5 +1,6 @@
 import express from "express";
 import connection from "../dbConnection.js";
+import { result, error } from "./tools/apiDataFormat.js";
 
 const router = express.Router();
 
@@ -7,7 +8,7 @@ const router = express.Router();
 // @access public
 router.post("/", async (req, res) => {
   if (!req.body.page) {
-    res.json({ ok: false, error: `Data is not in the correct format.` });
+    res.json(error(`Data is not in the correct format.`));
     return;
   }
   try {
@@ -29,10 +30,10 @@ router.post("/", async (req, res) => {
         req.body.condition ? req.body.condition : "1 = 1"
       );
     }
-    res.json({ ok: true, result: queryResult });
+    res.json(result(queryResult));
   } catch (error) {
     console.error(error);
-    res.json({ ok: false, error });
+    res.json(error(error));
   }
 });
 
@@ -52,10 +53,10 @@ router.post("/number", async (req, res) => {
         req.body.condition ? req.body.condition : "1 = 1"
       );
     }
-    res.json({ ok: true, result: queryResult[0].number });
+    res.json(result(queryResult[0].number));
   } catch (error) {
     console.error(error);
-    res.json({ ok: false, error });
+    res.json(error(error));
   }
 });
 

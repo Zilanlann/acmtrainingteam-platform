@@ -15,7 +15,23 @@
         </template>
       </el-page-header>
       <div style="float: right; margin-top: -24px">
-        <el-button type="primary" @click="dialogVisible = true"
+        <el-input
+          v-model="search"
+          :placeholder="
+            $route.params.userName ? `Search Problem` : `Search User`
+          "
+          style="width: 180px; margin-right: -35px"
+          @keyup.enter="onSearch"
+        />
+        <el-button @click="onSearch" circle>
+          <el-icon>
+            <Search />
+          </el-icon>
+        </el-button>
+        <el-button
+          type="primary"
+          @click="dialogVisible = true"
+          style="margin-left: 20px"
           >Open Filter</el-button
         >
       </div>
@@ -23,28 +39,30 @@
     <el-dialog
       v-model="dialogVisible"
       title="Filter of submissions"
-      style="margin-top: 40px"
+      style="margin-top: 30px"
     >
-      <el-checkbox-group v-model="filterOptions">
+      <el-checkbox-group v-model="filterOptions" style="margin-top: -10px">
         <el-checkbox-button
           v-for="option in ['Platform', 'Status', 'Tags', 'Time', 'Rating']"
           :key="option"
           :label="option"
-          >{{ option }}</el-checkbox-button
-        >
+        ></el-checkbox-button>
       </el-checkbox-group>
       <el-divider />
-      <el-form :model="filter" label-position="right" label-width="80px">
+      <el-form
+        :model="filter"
+        label-position="right"
+        label-width="80px"
+        style="margin-bottom: -10px"
+      >
         <el-form-item label="Platform">
-          <el-checkbox-group v-model="filter.platform">
-            <el-checkbox-button
-              :disabled="!filterOptions.includes('Platform')"
-              v-for="platform in ['Codeforces', 'LeetCode']"
-              :key="platform"
-              :label="platform"
-              >{{ platform }}</el-checkbox-button
-            >
-          </el-checkbox-group>
+          <el-radio-group
+            v-model="filter.platform"
+            :disabled="!filterOptions.includes('Platform')"
+          >
+            <el-radio-button label="Codeforces" />
+            <el-radio-button label="LeetCode" />
+          </el-radio-group>
         </el-form-item>
         <el-form-item label="Status">
           <el-select-v2
@@ -101,7 +119,7 @@
         </el-form-item>
       </el-form>
       <template #footer>
-        <span class="dialog-footer">
+        <span>
           <el-button @click="dialogVisible = false">Cancel</el-button>
           <el-button type="primary" @click="submitFilter"> Confirm </el-button>
         </span>
@@ -189,11 +207,11 @@
     <el-row>
       <el-pagination
         style="margin: 0 auto"
-        v-model:current-page="page"
+        v-model:current-page="requestBody.page"
         :page-size="15"
         :pager-count="11"
         layout="prev, pager, next"
-        :total="itemNumber"
+        :total="150"
       />
     </el-row>
   </el-container>
@@ -212,9 +230,6 @@ export default {
   data() {
     return {
       tableData: [],
-      page: 1,
-      itemNumber: 1000,
-      condition: {},
       dialogVisible: false,
       filterOptions: [],
       filter: {
@@ -223,6 +238,11 @@ export default {
         platform: [],
         status: [],
         tags: [],
+      },
+      search: "",
+      requestBody: {
+        condition: {},
+        page: 1,
       },
       shortcuts: [
         {
@@ -298,51 +318,55 @@ export default {
     getProblemUrl,
     initializeCondition() {
       if (this.$route.params.userName) {
-        this.condition.user_name = this.$route.params.userName;
+        this.requestBody.condition.name = this.$route.params.userName;
       } else if (this.$route.params.problemId) {
-        this.condition.problem_id = this.$route.params.problemId;
+        this.requestBody.condition["p.id"] = this.$route.params.problemId;
       }
     },
     submitFilter() {
+      this.requestBody.filter = this.filterOptions.reduce((obj, item) => {
+        obj[item.toLowerCase()] = this.filter[item.toLowerCase()];
+        return obj;
+      }, {});
       this.dialogVisible = false;
-      console.log(this.filter.time);
+    },
+    onSearch() {
+      delete this.requestBody.filter;
+      if (this.$route.params.userName) {
+        this.requestBody.search = {
+          problem: this.search,
+        };
+      } else {
+        this.requestBody.search = {
+          user: this.search,
+        };
+      }
+    },
+    getTableData() {
+      post("/api/submissions", this.requestBody, (result) => {
+        this.tableData = result;
+      });
     },
   },
   watch: {
-    page() {
-      post(
-        "/api/submissions",
-        {
-          condition: this.condition,
-          page: parseInt(this.page),
-        },
-        (result) => {
-          this.tableData = result;
-        }
-      );
+    requestBody: {
+      handler() {
+        this.getTableData();
+      },
+      deep: true,
     },
   },
   async created() {
     this.initializeCondition();
-    post(
-      "/api/submissions/number",
-      {
-        condition: this.condition,
-      },
-      (result) => {
-        this.itemNumber = result;
-      }
-    );
-    post(
-      "/api/submissions",
-      {
-        condition: this.condition,
-        page: parseInt(this.page),
-      },
-      (result) => {
-        this.tableData = result;
-      }
-    );
+    this.getTableData();
+    post("/api/tags", null, (result) => {
+      this.tagList = result.map((item) => {
+        return {
+          value: item.tag,
+          label: item.tag,
+        };
+      });
+    });
   },
 };
 </script>

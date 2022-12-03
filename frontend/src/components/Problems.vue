@@ -98,7 +98,7 @@ export default {
     return {
       tableData: [],
       page: 1,
-      itemNumber: 1000,
+      itemNumber: 750,
       condition: null,
     };
   },
@@ -117,7 +117,7 @@ export default {
         }
       );
     },
-    async getPageNumber() {
+    getPageNumber() {
       post(
         "/api/problems/number",
         {

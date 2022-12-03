@@ -31,9 +31,9 @@ router.post("/", async (req, res) => {
       );
     }
     res.json(result(queryResult));
-  } catch (error) {
-    console.error(error);
-    res.json(error(error));
+  } catch (err) {
+    console.error(err);
+    res.json(error(err));
   }
 });
 
@@ -54,9 +54,9 @@ router.post("/number", async (req, res) => {
       );
     }
     res.json(result(queryResult[0].number));
-  } catch (error) {
-    console.error(error);
-    res.json(error(error));
+  } catch (err) {
+    console.error(err);
+    res.json(error(err));
   }
 });
 

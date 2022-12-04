@@ -1,14 +1,100 @@
 <template>
   <el-container style="height: 100%; width: 100%">
-    <el-header v-if="$route.params.tag">
+    <el-header>
       <el-page-header @back="this.$router.back()">
         <template #content>
           <span class="text-large font-600 mr-3">
-            <span> Problem of tag "{{ $route.params.tag }}" </span>
+            <span v-if="$route.params.tag">
+              Problem of tag "{{ $route.params.tag }}"
+            </span>
+            <span v-else> All problems </span>
           </span>
         </template>
       </el-page-header>
+      <div style="float: right; margin-top: -24px">
+        <el-input
+          v-model="search"
+          :placeholder="`Search Problem`"
+          style="width: 180px; margin-right: -35px"
+          @keyup.enter="onSearch"
+        />
+        <el-button @click="onSearch" circle>
+          <el-icon>
+            <Search />
+          </el-icon>
+        </el-button>
+        <el-button
+          type="primary"
+          @click="dialogVisible = true"
+          style="margin-left: 20px"
+          >Open Filter</el-button
+        >
+      </div>
     </el-header>
+    <el-dialog
+      v-model="dialogVisible"
+      title="Filter of problems"
+      style="margin-top: 30px"
+    >
+      <el-checkbox-group v-model="filterOptions" style="margin-top: -10px">
+        <el-checkbox-button
+          v-for="option in ['Platform', 'Tags', 'Rating']"
+          :key="option"
+          :label="option"
+        ></el-checkbox-button>
+      </el-checkbox-group>
+      <el-divider />
+      <el-form
+        :model="filter"
+        label-position="right"
+        label-width="80px"
+        style="margin-bottom: -10px"
+      >
+        <el-form-item label="Platform">
+          <el-radio-group
+            v-model="filter.platform"
+            :disabled="!filterOptions.includes('Platform')"
+          >
+            <el-radio-button label="Codeforces" />
+            <el-radio-button label="LeetCode" />
+          </el-radio-group>
+        </el-form-item>
+        <el-form-item label="Tags">
+          <el-select-v2
+            :disabled="!filterOptions.includes('Tags')"
+            v-model="filter.tags"
+            filterable
+            :options="tagList"
+            placeholder="Please select tags"
+            style="width: 340px"
+            multiple
+            collapse-tags
+            collapse-tags-tooltip
+          />
+        </el-form-item>
+        <el-form-item label="Rating">
+          <el-slider
+            :disabled="!filterOptions.includes('Rating')"
+            v-model="filter.rating"
+            range
+            :min="800"
+            :max="3500"
+            :step="100"
+            :marks="{
+              800: '800',
+              3500: '3500',
+            }"
+          />
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <span>
+          <el-button @click="dialogVisible = false">Cancel</el-button>
+          <el-button type="primary" @click="submitFilter"> Confirm </el-button>
+        </span>
+      </template>
+    </el-dialog>
+    <el-divider style="margin: 0" />
     <el-table :data="tableData" stripe style="width: 100%">
       <el-table-column width="26px" style="padding: 0">
         <template #default="scope">
@@ -54,11 +140,7 @@
             :key="item"
             :underline="false"
           >
-            <el-tag
-              @click="this.$router.push(`/problems/tag/${item}`)"
-              style="margin: 0 2px"
-              size="small"
-            >
+            <el-tag @click="addTag(item)" style="margin: 0 2px" size="small">
               {{ item }}
             </el-tag>
           </el-link>
@@ -80,11 +162,11 @@
     </el-table>
     <el-pagination
       style="margin: 0 auto"
-      v-model:current-page="page"
+      v-model:current-page="requestBody.page"
       :page-size="15"
       :pager-count="11"
       layout="prev, pager, next"
-      :total="itemNumber"
+      :total="150"
     />
     <el-footer height="0"> </el-footer>
   </el-container>
@@ -97,59 +179,75 @@ export default {
   data() {
     return {
       tableData: [],
-      page: 1,
-      itemNumber: 750,
       condition: null,
+      dialogVisible: false,
+      filterOptions: [],
+      filter: {
+        rating: [800, 3500],
+        platform: [],
+        tags: [],
+      },
+      search: "",
+      requestBody: {
+        page: 1,
+        filter: {},
+      },
+      tagList: [],
     };
   },
   methods: {
     getRatingColor,
     getProblemUrl,
     getTableData() {
-      post(
-        "/api/problems",
-        {
-          condition: this.condition,
-          page: parseInt(this.page),
-        },
-        (result) => {
-          this.tableData = result;
-        }
-      );
+      post("/api/problems", this.requestBody, (result) => {
+        this.tableData = result;
+      });
     },
-    getPageNumber() {
-      post(
-        "/api/problems/number",
-        {
-          condition: this.condition,
-        },
-        (result) => {
-          this.itemNumber = result;
-        }
-      );
+    onSearch() {
+      this.requestBody.search = this.search;
     },
-    initializeCondition() {
-      if (this.$route.params.tag) {
-        this.condition = {
-          tag: this.$route.params.tag,
-        };
+    submitFilter() {
+      this.requestBody.filter = this.filterOptions.reduce((obj, item) => {
+        obj[item.toLowerCase()] = this.filter[item.toLowerCase()];
+        return obj;
+      }, {});
+      this.dialogVisible = false;
+    },
+    addTag(tag) {
+      this.filter.tags.push(tag);
+      if (!this.filterOptions.includes("Tags")) {
+        this.filterOptions.push("Tags");
       }
+      if (!this.requestBody.filter?.tags) {
+        this.requestBody.filter.tags = [];
+      }
+      if (!this.requestBody.filter.tags.includes(tag)) {
+        this.requestBody.filter.tags.push(tag);
+      }
+      this.getTableData();
     },
   },
   watch: {
-    page() {
-      this.getTableData();
-    },
-    $route() {
-      this.initializeCondition();
-      this.getPageNumber();
-      this.getTableData();
+    requestBody: {
+      handler() {
+        this.getTableData();
+      },
+      deep: true,
     },
   },
   async created() {
-    this.initializeCondition();
-    this.getPageNumber();
+    if (this.$route.params.tag) {
+      this.addTag(this.$route.params.tag);
+    }
     this.getTableData();
+    post("/api/tags", null, (result) => {
+      this.tagList = result.map((item) => {
+        return {
+          value: item.tag,
+          label: item.tag,
+        };
+      });
+    });
   },
 };
 </script>

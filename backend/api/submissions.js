@@ -29,7 +29,7 @@ function getAddtionalSql(filter, search) {
   }
   if (filter?.tags?.length) {
     addtionalSql += ` AND (tags LIKE '%${filter.tags.join(
-      "%' OR tags LIKE '%"
+      "%' AND tags LIKE '%"
     )}%')`;
   }
 
@@ -48,7 +48,6 @@ router.post("/", async (req, res) => {
     res.json(error(`Data is not in the correct format.`));
     return;
   }
-  // console.log(req.body?.filter);
   const addtionalSql = getAddtionalSql(req.body?.filter, req.body?.search);
   try {
     const queryResult = await query(

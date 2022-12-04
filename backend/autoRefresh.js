@@ -88,38 +88,5 @@ async function refreshLeetcode() {
   });
 }
 
-// Update user_daily
-async function refreshUserDaily() {
-  // 30 days
-  const monthBeginTimestamp = parseInt(Date.now() / 1000) - 86400 * 30;
-  // 7 days
-  const weekBeginTimestamp = parseInt(Date.now() / 1000) - 86400 * 7;
-
-  const countSubmissionQuery = `SELECT COUNT(*) AS submissionNumber FROM submission 
-	WHERE user_id = ${row.id}`;
-  const submissionNumber = (await connection.query(countSubmissionQuery))[0].submissionNumber;
-  console.log(submissionNumber);
-  const recentAcSubmissionQuery = `SELECT submit_time, rating FROM view_submission_problem
-	WHERE user_id = ${row.id} AND submit_time > ${weekBeginTimestamp} 
-	AND status = 'Accepted'`;
-
-  let activeScore = 0;
-  const submissionArray = await connection.query(recentAcSubmissionQuery);
-  for (const submission of submissionArray) {
-    activeScore +=
-      (submission.rating * (submission.submit_time - weekBeginTimestamp)) / (800 * 86400);
-  }
-  const updateQuery = `INSERT INTO user_daily SET ?
-	ON DUPLICATE KEY UPDATE active_score = VALUES(active_score),
-	submission_number = VALUES(submission_number)`;
-  await connection.query(updateQuery, {
-    user_id: row.id,
-    active_score: activeScore,
-    submission_number: submissionNumber,
-  });
-  console.log(`${row.id} submission:${submissionNumber} score:${activeScore}`);
-}
-
 refreshCodeforces();
 refreshLeetcode();
-// await refreshUserDaily();

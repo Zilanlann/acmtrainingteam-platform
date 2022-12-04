@@ -1,8 +1,30 @@
 import express from "express";
-import connection from "../dbConnection.js";
+import query from "../dbQuery.js";
 import { result, error } from "./tools/apiDataFormat.js";
 
 const router = express.Router();
+
+function getAddtionalSql(filter, search) {
+  let addtionalSql = "";
+  if (filter?.platform === "Codeforces") {
+    addtionalSql += " AND codeforces_problem_id IS NOT NULL";
+  } else if (filter?.platform === "LeetCode") {
+    addtionalSql += " AND leetcode_problem_id IS NOT NULL";
+  }
+  if (filter?.rating?.length === 2) {
+    addtionalSql += ` AND rating > ${filter.rating[0]} AND rating < ${filter.rating[1]}`;
+  }
+  if (filter?.tags?.length) {
+    addtionalSql += ` AND (tags LIKE '%${filter.tags.join(
+      "%' AND tags LIKE '%"
+    )}%')`;
+  }
+
+  if (search) {
+    addtionalSql += ` AND title LIKE '%${search}%'`;
+  }
+  return addtionalSql ? addtionalSql : "";
+}
 
 // $route  POST api/problems
 // @access public
@@ -11,49 +33,15 @@ router.post("/", async (req, res) => {
     res.json(error(`Data is not in the correct format.`));
     return;
   }
+  const addtionalSql = getAddtionalSql(req.body?.filter, req.body?.search);
   try {
-    let queryResult = null;
-    if (req.body.condition?.tag) {
-      queryResult = await connection.query(
-        `SELECT problem_id, leetcode_problem_id, codeforces_problem_id,
+    const queryResult = await query(
+      `SELECT id as problem_id, leetcode_problem_id, codeforces_problem_id,
        title, title_slug, rating, tags
-			 FROM view_problem_problem_tag WHERE ?
-			 LIMIT ${15 * (req.body.page - 1)}, 15`,
-        req.body.condition ? req.body.condition : "1 = 1"
-      );
-    } else {
-      queryResult = await connection.query(
-        `SELECT id as problem_id, leetcode_problem_id, codeforces_problem_id,
-       title, title_slug, rating, tags
-			 FROM problem WHERE ?
-			 LIMIT ${15 * (req.body.page - 1)}, 15`,
-        req.body.condition ? req.body.condition : "1 = 1"
-      );
-    }
+			 FROM problem WHERE 1 = 1 ${addtionalSql}
+			 LIMIT ${15 * (req.body.page - 1)}, 15`
+    );
     res.json(result(queryResult));
-  } catch (err) {
-    console.error(err);
-    res.json(error(err));
-  }
-});
-
-// $route  POST api/problems/number
-// @access public
-router.post("/number", async (req, res) => {
-  try {
-    let queryResult = null;
-    if (req.body.condition?.tag) {
-      queryResult = await connection.query(
-        `SELECT COUNT(DISTINCT problem_id) AS number FROM view_problem_problem_tag WHERE ?`,
-        req.body.condition
-      );
-    } else {
-      queryResult = await connection.query(
-        `SELECT COUNT(id) AS number FROM problem WHERE ?`,
-        req.body.condition ? req.body.condition : "1 = 1"
-      );
-    }
-    res.json(result(queryResult[0].number));
   } catch (err) {
     console.error(err);
     res.json(error(err));

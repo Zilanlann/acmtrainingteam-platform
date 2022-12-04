@@ -168,7 +168,6 @@
       layout="prev, pager, next"
       :total="150"
     />
-    <el-footer height="0"> </el-footer>
   </el-container>
 </template>
 

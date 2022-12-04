@@ -13,15 +13,15 @@ router.post("/", async (req, res) => {
   const weekBeginTimestamp = parseInt(Date.now() / 1000) - 86400 * 7;
   try {
     const queryResult = await query(
-      `SELECT name,
+      `SELECT name user_name,
        COUNT(*) month_submission_number,
        COUNT(status = 'Accepted' OR NULL) month_ac_submission_number,
-       AVG(IF(status = 'Accepted', rating, NULL)) month_average_rating,
+       AVG(IF(status = 'Accepted', rating, NULL)) month_average_ac_rating,
        COUNT(submit_time > ${weekBeginTimestamp} OR NULL) week_submission_number,
        COUNT(submit_time > ${weekBeginTimestamp}
           AND status = 'Accepted' OR NULL) week_ac_submission_number,
        AVG(IF(status = 'Accepted' AND submit_time > ${weekBeginTimestamp},
-          rating, NULL)) week_average_rating,
+          rating, NULL)) week_average_ac_rating,
        SUM(IF(status = 'Accepted', 
 			 		rating * (submit_time - ${monthBeginTimestamp}) / (800 * 86400), 0))
           active_score

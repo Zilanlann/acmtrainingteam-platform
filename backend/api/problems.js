@@ -12,7 +12,7 @@ function getAddtionalSql(filter, search) {
     addtionalSql += " AND leetcode_problem_id IS NOT NULL";
   }
   if (filter?.rating?.length === 2) {
-    addtionalSql += ` AND rating > ${filter.rating[0]} AND rating < ${filter.rating[1]}`;
+    addtionalSql += ` AND rating >= ${filter.rating[0]} AND rating <= ${filter.rating[1]}`;
   }
   if (filter?.tags?.length) {
     addtionalSql += ` AND (tags LIKE '%${filter.tags.join(

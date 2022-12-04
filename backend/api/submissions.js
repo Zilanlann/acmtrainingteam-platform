@@ -20,7 +20,7 @@ function getAddtionalSql(filter, search) {
     )}')`;
   }
   if (filter?.rating?.length === 2) {
-    addtionalSql += ` AND s.rating > ${filter.rating[0]} AND s.rating < ${filter.rating[1]}`;
+    addtionalSql += ` AND s.rating >= ${filter.rating[0]} AND s.rating <= ${filter.rating[1]}`;
   }
   if (filter?.time?.length === 2) {
     const beginTimestamp = new Date(filter.time[0]).getTime() / 1000;

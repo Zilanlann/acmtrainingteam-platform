@@ -1,5 +1,5 @@
 import express from "express";
-import connection from "../dbConnection.js";
+import query from "../dbQuery.js";
 import { result, error } from "./tools/apiDataFormat.js";
 
 const router = express.Router();
@@ -8,7 +8,7 @@ const router = express.Router();
 // @access public
 router.post("/register", async (req, res) => {
   try {
-    await connection.query(`INSERT INTO user SET ?`, req.body);
+    await query(`INSERT INTO user SET ?`, req.body);
     res.json(result(`User ${req.body.name} has registered successfully.`));
   } catch (err) {
     console.error(err);
@@ -24,7 +24,7 @@ router.post("/signin", async (req, res) => {
       res.json(error(`Data is not in the correct format.`));
       return;
     }
-    const selectResult = await connection.query(
+    const selectResult = await query(
       `SELECT id, name, password FROM user WHERE ?? = ?`,
       [req.body.type, req.body.usernameOrEmail]
     );
@@ -37,6 +37,21 @@ router.post("/signin", async (req, res) => {
     } else {
       res.json(error("The password is not correct."));
     }
+  } catch (err) {
+    console.error(err);
+    res.json(error(err));
+  }
+});
+
+// $route  POST api/user/list
+// @access public
+router.post("/list", async (req, res) => {
+  try {
+    const selectResult = await query(
+			`SELECT id, name, codeforces_handle, leetcode_handle 
+			FROM user`
+    );
+    res.json(result(selectResult));
   } catch (err) {
     console.error(err);
     res.json(error(err));

@@ -204,16 +204,14 @@
         </template>
       </el-table-column>
     </el-table>
-    <el-row>
-      <el-pagination
-        style="margin: 0 auto"
-        v-model:current-page="requestBody.page"
-        :page-size="15"
-        :pager-count="11"
-        layout="prev, pager, next"
-        :total="150"
-      />
-    </el-row>
+    <el-pagination
+      style="margin: 0 auto"
+      v-model:current-page="requestBody.page"
+      :page-size="15"
+      :pager-count="11"
+      layout="prev, pager, next"
+      :total="150"
+    />
   </el-container>
 </template>
 

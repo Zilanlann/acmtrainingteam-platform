@@ -6,6 +6,7 @@ import Discussion from "@/components/Discussion.vue";
 import Following from "@/components/Following.vue";
 import Problems from "@/components/Problems.vue";
 import Settings from "@/components/Settings.vue";
+import FollowingSetting from "@/components/Settings/FollowingSetting.vue";
 import User from "@/components/User.vue";
 import Submissions from "@/components/Submissions.vue";
 import Register from "@/components/Register.vue";
@@ -26,7 +27,13 @@ const routes = [
       { path: "/problems", component: Problems },
       { path: "/problems/tag", component: Problems },
       { path: "/problems/tag/:tag", component: Problems },
-      { path: "/settings", component: Settings },
+      {
+        path: "/settings",
+        component: Settings,
+        children: [
+          { path: "/settings/following", component: FollowingSetting },
+        ],
+      },
       { path: "/user", component: User },
       { path: "/user/:userName", component: User },
       { path: "/submissions/user/:userName", component: Submissions },

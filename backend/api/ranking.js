@@ -13,7 +13,7 @@ router.post("/", async (req, res) => {
   const weekBeginTimestamp = parseInt(Date.now() / 1000) - 86400 * 7;
   try {
     const queryResult = await query(
-      `SELECT name user_name,
+      `SELECT name user_name, codeforces_avatar, leetcode_avatar,
        COUNT(*) month_submission_number,
        COUNT(status = 'Accepted' OR NULL) month_ac_submission_number,
        AVG(IF(status = 'Accepted', rating, NULL)) month_average_ac_rating,

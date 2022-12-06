@@ -4,6 +4,15 @@
       <el-table-column label="User" align="center">
         <template #default="scope">
           <el-link @click="this.$router.push(`/user/${scope.row.user_name}`)">
+            <el-avatar
+              :size="28"
+              :src="
+                scope.row.codeforces_avatar
+                  ? getCodeforcesAvatar(scope.row)
+                  : getLeetcodeAvatar(scope.row)
+              "
+              style="margin-right: 6px"
+            />
             {{ scope.row.user_name }}
           </el-link>
         </template>
@@ -105,16 +114,18 @@
 
 <script>
 import { post } from "@/logic/dataGetting";
-import { getRatingColor } from "@/logic/dataShowing";
+import {
+  getRatingColor,
+  getLeetcodeAvatar,
+  getCodeforcesAvatar,
+} from "@/logic/dataShowing";
 export default {
   data() {
     return {
       tableData: [],
     };
   },
-  methods: {
-    getRatingColor,
-  },
+  methods: { getLeetcodeAvatar, getCodeforcesAvatar, getRatingColor },
   async created() {
     post("/api/ranking", null, (result) => {
       this.tableData = result;

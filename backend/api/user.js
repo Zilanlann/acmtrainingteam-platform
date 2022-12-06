@@ -43,19 +43,4 @@ router.post("/signin", async (req, res) => {
   }
 });
 
-// $route  POST api/user/list
-// @access public
-router.post("/list", async (req, res) => {
-  try {
-    const selectResult = await query(
-			`SELECT id, name, codeforces_handle, leetcode_handle 
-			FROM user`
-    );
-    res.json(result(selectResult));
-  } catch (err) {
-    console.error(err);
-    res.json(error(err));
-  }
-});
-
 export default router;

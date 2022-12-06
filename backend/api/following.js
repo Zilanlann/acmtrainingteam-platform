@@ -44,18 +44,36 @@ router.post("/delete", async (req, res) => {
 // $route  POST api/following/list
 // @access public
 router.post("/list", async (req, res) => {
-  console.log(req.body);
   if (!req.body.user_id) {
     res.json(error(`Data is not in the correct format.`));
     return;
   }
-
   try {
     const selectResult = await query(
       `SELECT nickname, name, email, codeforces_handle, leetcode_handle,
-			user_id, follow_id
+			user_id, follow_id, codeforces_avatar, leetcode_avatar 
 		  FROM user u, user_following f WHERE ? AND follow_id = u.id`,
       req.body
+    );
+    res.json(result(selectResult));
+  } catch (err) {
+    console.error(err);
+    res.json(error(err));
+  }
+});
+
+// $route  POST api/following/userlisttofollow
+// @access public
+router.post("/userlisttofollow", async (req, res) => {
+  if (!req.body.user_id) {
+    res.json(error(`Data is not in the correct format.`));
+    return;
+  }
+  try {
+    const selectResult = await query(
+      `SELECT id, name, codeforces_handle, leetcode_handle 
+			FROM user WHERE id NOT IN 
+			(SELECT follow_id FROM user_following WHERE user_id = ${req.body.user_id})`
     );
     res.json(result(selectResult));
   } catch (err) {

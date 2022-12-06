@@ -1,4 +1,5 @@
 import moment from "moment";
+
 function getStatusColor(status) {
   switch (status) {
     case "Accepted":
@@ -12,6 +13,7 @@ function getStatusColor(status) {
       return "warning";
   }
 }
+
 function getRatingColor(rating) {
   let color;
   if (rating < 1200) {
@@ -31,6 +33,7 @@ function getRatingColor(rating) {
   }
   return color;
 }
+
 function getFromNowTime(timestamp) {
   const nowMoment = moment();
   const submitMoment = moment.unix(timestamp);
@@ -43,6 +46,7 @@ function getFromNowTime(timestamp) {
   }
   return "Now";
 }
+
 function getProblemUrl(row) {
   if (row.title_slug) {
     return `https://leetcode.cn/problems/${row.title_slug}`;
@@ -53,6 +57,7 @@ function getProblemUrl(row) {
   }
   return `https://codeforces.com/problemset/problem/${row.codeforces_problem_id}`;
 }
+
 function getSubmissionUrl(row) {
   if (row.title_slug) {
     return `https://leetcode.cn/submissions/detail/${row.submission_id}`;
@@ -63,10 +68,25 @@ function getSubmissionUrl(row) {
   }
   return `https://codeforces.com/contest/${contestId}/submission/${row.submission_id}`;
 }
+
+function getLeetcodeAvatar(row) {
+  return row.leetcode_avatar
+    ? `https://assets.leetcode.cn/aliyun-lc-upload/${row.leetcode_avatar}`
+    : `https://assets.leetcode.cn/aliyun-lc-upload/default_avatar.png`;
+}
+
+function getCodeforcesAvatar(row) {
+  return row.codeforces_avatar
+    ? `https://userpic.codeforces.org/${row.codeforces_avatar}`
+    : `https://userpic.codeforces.org/no-avatar.jpg`;
+}
+
 export {
   getStatusColor,
   getFromNowTime,
   getRatingColor,
   getProblemUrl,
   getSubmissionUrl,
+  getLeetcodeAvatar,
+  getCodeforcesAvatar,
 };

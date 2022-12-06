@@ -157,7 +157,19 @@
       </el-table-column>
       <el-table-column label="User" align="center">
         <template #default="scope">
-          <el-link @click="this.$router.push(`/user/${scope.row.user_name}`)">
+          <el-link
+            :underline="false"
+            @click="this.$router.push(`/user/${scope.row.user_name}`)"
+          >
+            <el-avatar
+              :size="28"
+              :src="
+                scope.row.title_slug
+                  ? getLeetcodeAvatar(scope.row)
+                  : getCodeforcesAvatar(scope.row)
+              "
+              style="margin-right: 6px"
+            />
             {{ scope.row.user_name }}
           </el-link>
         </template>
@@ -222,6 +234,8 @@ import {
   getStatusColor,
   getSubmissionUrl,
   getProblemUrl,
+  getLeetcodeAvatar,
+  getCodeforcesAvatar,
 } from "@/logic/dataShowing";
 import { post } from "@/logic/dataGetting";
 export default {
@@ -314,6 +328,8 @@ export default {
     getStatusColor,
     getSubmissionUrl,
     getProblemUrl,
+    getLeetcodeAvatar,
+    getCodeforcesAvatar,
     initializeCondition() {
       if (this.$route.params.userName) {
         this.requestBody.condition.name = this.$route.params.userName;

@@ -52,7 +52,8 @@ router.post("/", async (req, res) => {
   try {
     const queryResult = await query(
       `SELECT submission_id, s.leetcode_problem_id leetcode_problem_id, 
-			 s.codeforces_problem_id codeforces_problem_id, user_id, u.name user_name, 
+			 s.codeforces_problem_id codeforces_problem_id, user_id, u.name user_name,
+			 codeforces_avatar, leetcode_avatar,
 			 submit_time, status, title, title_slug, s.rating rating, tags
 			 FROM submission s, problem p, user u
 			 WHERE ? ${addtionalSql} AND ${JOIN_SQL}

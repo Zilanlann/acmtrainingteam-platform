@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-container v-if="!$route.params.userName">
+    <el-container style="padding: 20px" v-if="!$route.params.userName">
       To view page of your user, please sign in first.
     </el-container>
     <div v-else>

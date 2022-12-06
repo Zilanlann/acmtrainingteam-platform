@@ -1,6 +1,6 @@
 <template>
   <el-container style="height: 100%">
-    <el-container v-if="!$cookies.get('token')?.id">
+    <el-container style="padding: 20px" v-if="!$cookies.get('token')?.id">
       To view page of setting, please sign in first.
     </el-container>
     <el-container v-else>

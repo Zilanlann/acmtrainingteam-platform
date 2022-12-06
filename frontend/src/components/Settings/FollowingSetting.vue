@@ -14,7 +14,14 @@
             type="primary"
             :href="`https://codeforces.com/profile/${scope.row.codeforces_handle}`"
             target="_blank"
-            >{{ scope.row.codeforces_handle }}</el-link
+          >
+            <el-avatar
+              v-show="scope.row.codeforces_avatar"
+              :size="28"
+              :src="getCodeforcesAvatar(scope.row)"
+              style="margin-right: 6px"
+            />
+            {{ scope.row.codeforces_handle }}</el-link
           >
         </template>
       </el-table-column>
@@ -24,7 +31,13 @@
             type="primary"
             :href="`https://leetcode.cn/u/${scope.row.leetcode_handle}/`"
             target="_blank"
-            >{{ scope.row.leetcode_handle }}</el-link
+          >
+            <el-avatar
+              v-show="scope.row.leetcode_avatar"
+              :size="28"
+              :src="getLeetcodeAvatar(scope.row)"
+              style="margin-right: 6px"
+            />{{ scope.row.leetcode_handle }}</el-link
           >
         </template>
       </el-table-column>
@@ -45,7 +58,7 @@
         :model="followingToAdd"
         :rules="rules"
         ref="formRef"
-        style="text-align: center;"
+        style="text-align: center"
       >
         <el-form-item label="User" prop="user_id">
           <el-select-v2
@@ -70,6 +83,7 @@
 </template>
 <script>
 import { post } from "@/logic/dataGetting";
+import { getLeetcodeAvatar, getCodeforcesAvatar } from "@/logic/dataShowing";
 
 export default {
   data() {
@@ -100,6 +114,8 @@ export default {
     };
   },
   methods: {
+    getLeetcodeAvatar,
+    getCodeforcesAvatar,
     getFollowingList() {
       post(
         "/api/following/list",
@@ -113,14 +129,20 @@ export default {
       );
     },
     getUserList() {
-      post("/api/user/list", null, (result) => {
-        this.userList = result.map((item) => {
-          return {
-            value: item.id,
-            label: item.name,
-          };
-        });
-      });
+      post(
+        "/api/following/userlisttofollow",
+        {
+          user_id: this.$cookies.get("token")?.id,
+        },
+        (result) => {
+          this.userList = result.map((item) => {
+            return {
+              value: item.id,
+              label: item.name,
+            };
+          });
+        }
+      );
     },
     onSubmit() {
       const formEl = this.$refs.formRef;
@@ -145,6 +167,7 @@ export default {
               };
             }
           );
+          this.getUserList();
           this.getFollowingList();
         }
       });
@@ -163,6 +186,7 @@ export default {
           });
         }
       );
+      this.getUserList();
       this.getFollowingList();
     },
   },

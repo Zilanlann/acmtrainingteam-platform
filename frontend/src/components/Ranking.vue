@@ -1,9 +1,12 @@
 <template>
-  <el-container style="height: 100%; width: 100%">
+  <el-container style="height: 100%; width: 100%" direction="vertical">
     <el-table :data="tableData" stripe style="width: 100%">
       <el-table-column label="User" align="center">
         <template #default="scope">
-          <el-link @click="this.$router.push(`/user/${scope.row.user_name}`)">
+          <el-link
+            @click="this.$router.push(`/user/${scope.row.user_name}`)"
+            :underline="false"
+          >
             <el-avatar
               :size="28"
               :src="
@@ -108,7 +111,6 @@
         </template>
       </el-table-column>
     </el-table>
-    <el-footer height="0"> </el-footer>
   </el-container>
 </template>
 

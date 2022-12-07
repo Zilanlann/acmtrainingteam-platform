@@ -14,6 +14,7 @@
             type="primary"
             :href="`https://codeforces.com/profile/${scope.row.codeforces_handle}`"
             target="_blank"
+            :underline="false"
           >
             <el-avatar
               v-show="scope.row.codeforces_avatar"
@@ -31,6 +32,7 @@
             type="primary"
             :href="`https://leetcode.cn/u/${scope.row.leetcode_handle}/`"
             target="_blank"
+            :underline="false"
           >
             <el-avatar
               v-show="scope.row.leetcode_avatar"

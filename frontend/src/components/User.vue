@@ -257,7 +257,7 @@
             </el-aside>
             <el-container>
               <el-header height="120px" style="padding: 0">
-                <el-table :data="tableData" style="width: 100%">
+                <el-table :data="weekMonthData" style="width: 100%">
                   <el-table-column prop="type" label="Type" align="center" />
                   <el-table-column prop="ac" label="AC" align="center" />
                   <el-table-column prop="all" label="All" align="center" />
@@ -404,7 +404,7 @@ export default {
       followingDialogVisible: false,
       followersDialogVisible: false,
       userNumber: 0,
-      tableData: [
+      weekMonthData: [
         {
           type: "Week",
           ac: 0,
@@ -426,8 +426,8 @@ export default {
     getProblemUrl,
     getRatingColor,
     getFromNowTime,
-    getTableData() {
-      this.tableData = [
+    getWeekMonthData() {
+      this.weekMonthData = [
         {
           type: "Week",
           ac: this.information.submissionStatus.week_ac_submission_number,
@@ -491,7 +491,7 @@ export default {
         }
         showCareerCharts(this.information.submissionStatus);
         showActivityCharts(this.information);
-        this.getTableData();
+        this.getWeekMonthData();
         this.getPercentage();
       }
     );

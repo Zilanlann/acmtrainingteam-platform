@@ -126,7 +126,6 @@ export default {
         },
         (result) => {
           this.tableData = result;
-          console.log(result);
         }
       );
     },

@@ -441,18 +441,22 @@ export default {
       ];
     },
     getPercentage() {
-      this.careerPercentage = (
-        100 -
-        (this.information.submissionStatus.career_ranking /
-          this.information.userNumber) *
-          100
-      ).toFixed(2);
-      this.activePercentage = (
-        100 -
-        (this.information.submissionStatus.active_ranking /
-          this.information.userNumber) *
-          100
-      ).toFixed(2);
+      this.careerPercentage = Number(
+        (
+          100 -
+          (this.information.submissionStatus.career_ranking /
+            this.information.userNumber) *
+            100
+        ).toFixed(2)
+      );
+      this.activePercentage = Number(
+        (
+          100 -
+          (this.information.submissionStatus.active_ranking /
+            this.information.userNumber) *
+            100
+        ).toFixed(2)
+      );
     },
   },
   created() {
@@ -463,6 +467,28 @@ export default {
       },
       (result) => {
         this.information = result;
+        if (!this.information.submissionStatus) {
+          this.information.submissionStatus = {
+            submission_number: 0,
+            ac_submission_number: 0,
+            easy_ac_submission_number: 0,
+            medium_ac_submission_number: 0,
+            hard_ac_submission_number: 0,
+            veryhard_ac_submission_number: 0,
+            hardcore_ac_submission_number: 0,
+            norating_ac_submission_number: 0,
+            average_ac_rating: 0,
+            month_submission_number: 0,
+            week_ac_submission_number: 0,
+            week_average_ac_rating: 0,
+            week_submission_number: 0,
+            month_ac_submission_number: 0,
+            month_average_ac_rating: 0,
+            active_score: 0,
+            career_ranking: 0,
+            active_ranking: 0,
+          };
+        }
         showCareerCharts(this.information.submissionStatus);
         showActivityCharts(this.information);
         this.getTableData();

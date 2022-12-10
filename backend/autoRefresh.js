@@ -89,6 +89,15 @@ async function refreshLeetcode() {
   });
 }
 
+async function refreshUserDailyStatus() {
+  try {
+    await connection.query(`CALL refresh_user_daily_status`);
+    console.log("Refresh user_daily_status successfully.");
+  } catch (err) {
+    console.error(err);
+  }
+}
+
 async function refreshLeetcodeAvatar() {
   const leetcodeRow = await connection.query(
     "SELECT id, leetcode_handle FROM user WHERE leetcode_handle is not NULL"
@@ -131,7 +140,8 @@ async function refreshCodeforcesAvatar() {
   }
 }
 
-refreshCodeforces();
-refreshLeetcode();
+// refreshCodeforces();
+// refreshLeetcode();
 // refreshLeetcodeAvatar();
 // refreshCodeforcesAvatar();
+refreshUserDailyStatus();

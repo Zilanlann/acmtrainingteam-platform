@@ -7,27 +7,14 @@ const router = express.Router();
 // $route  POST api/ranking
 // @access public
 router.post("/", async (req, res) => {
-  // 30 days
-  const monthBeginTimestamp = parseInt(Date.now() / 1000) - 86400 * 30;
-  // 7 days
-  const weekBeginTimestamp = parseInt(Date.now() / 1000) - 86400 * 7;
   try {
     const queryResult = await query(
-      `SELECT name user_name, codeforces_avatar, leetcode_avatar,
-       COUNT(*) month_submission_number,
-       COUNT(status = 'Accepted' OR NULL) month_ac_submission_number,
-       AVG(IF(status = 'Accepted', rating, NULL)) month_average_ac_rating,
-       COUNT(submit_time > ${weekBeginTimestamp} OR NULL) week_submission_number,
-       COUNT(submit_time > ${weekBeginTimestamp}
-          AND status = 'Accepted' OR NULL) week_ac_submission_number,
-       AVG(IF(status = 'Accepted' AND submit_time > ${weekBeginTimestamp},
-          rating, NULL)) week_average_ac_rating,
-       SUM(IF(status = 'Accepted', 
-			 		rating * (submit_time - ${monthBeginTimestamp}) / (800 * 86400), 0))
-          active_score
-			 FROM submission s, user u
-			 WHERE submit_time > ${monthBeginTimestamp} AND user_id = u.id
-			 GROUP BY user_id ORDER BY active_score DESC;`
+      `SELECT user_id, name user_name, 
+			leetcode_avatar, codeforces_avatar, active_score,
+			week_submission_number, week_ac_submission_number, week_average_ac_rating,
+			month_submission_number, month_ac_submission_number, month_average_ac_rating
+			FROM user_daily_status s, user u
+			WHERE user_id = u.id`
     );
     res.json(result(queryResult));
   } catch (err) {

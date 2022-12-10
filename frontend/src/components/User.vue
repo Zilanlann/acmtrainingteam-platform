@@ -1,6 +1,6 @@
 <template>
   <el-container>
-    <el-container style="padding: 20px" v-if="!$route.params.userName">
+    <el-container v-if="!$route.params.userName" style="padding: 20px">
       To view page of your user, please sign in first.
     </el-container>
     <el-container v-else>
@@ -15,33 +15,33 @@
       </el-header>
       <el-divider style="margin: 0" />
       <el-container
-        style="width: 700px; margin: 10px auto"
+        style="width: 780px; margin: 10px auto"
         direction="vertical"
       >
         <el-card style="margin: 10px; text-align: center">
           <template #header>
             {{ $route.params.userName }}
             <el-divider direction="vertical" />
-            {{ information.following.length }} Following
+            <el-button link size="large" @click="followingDialogVisible = true"
+              >{{ information.following.length }} Following</el-button
+            >
             <el-divider direction="vertical" />
-            {{ information.followers.length }} Followers
+            <el-button link size="large" @click="followersDialogVisible = true"
+              >{{ information.followers.length }} Followers</el-button
+            >
           </template>
           <el-descriptions border :column="1">
             <el-descriptions-item>
               <template #label>
-                <div>
-                  <el-icon><Message /></el-icon>
-                  Email
-                </div>
+                <el-icon><Message /></el-icon>
+                Email
               </template>
               {{ information.user.email }}
             </el-descriptions-item>
             <el-descriptions-item v-if="information.user.qq">
               <template #label>
-                <div>
-                  <img src="../image/qq.svg" alt="L" width="14" height="14" />
-                  QQ
-                </div>
+                <img src="../image/qq.svg" alt="L" width="14" height="14" />
+                QQ
               </template>
               {{ information.user.qq }}
             </el-descriptions-item>
@@ -104,6 +104,195 @@
               {{ information.user.about }}
             </el-descriptions-item>
           </el-descriptions>
+          <el-dialog v-model="followingDialogVisible" title="Following" center>
+            <el-table :data="information.following" stripe style="width: 100%">
+              <el-table-column label="User" align="center">
+                <template #default="scope">
+                  <el-link
+                    @click="this.$router.push(`/user/${scope.row.name}`)"
+                  >
+                    {{
+                      scope.row.nickname ? scope.row.nickname : scope.row.name
+                    }}
+                  </el-link>
+                </template>
+              </el-table-column>
+              <el-table-column label="Codeforces" align="center">
+                <template #default="scope">
+                  <el-link
+                    type="primary"
+                    :href="`https://codeforces.com/profile/${scope.row.codeforces_handle}`"
+                    target="_blank"
+                    :underline="false"
+                  >
+                    <el-avatar
+                      v-show="scope.row.codeforces_avatar"
+                      :size="28"
+                      :src="getCodeforcesAvatar(scope.row)"
+                      style="margin-right: 6px"
+                    />
+                    {{ scope.row.codeforces_handle }}</el-link
+                  >
+                </template>
+              </el-table-column>
+              <el-table-column label="LeetCode" align="center">
+                <template #default="scope">
+                  <el-link
+                    type="primary"
+                    :href="`https://leetcode.cn/u/${scope.row.leetcode_handle}/`"
+                    target="_blank"
+                    :underline="false"
+                  >
+                    <el-avatar
+                      v-show="scope.row.leetcode_avatar"
+                      :size="28"
+                      :src="getLeetcodeAvatar(scope.row)"
+                      style="margin-right: 6px"
+                    />{{ scope.row.leetcode_handle }}</el-link
+                  >
+                </template>
+              </el-table-column>
+            </el-table>
+          </el-dialog>
+          <el-dialog v-model="followersDialogVisible" title="Followers" center>
+            <el-table :data="information.followers" stripe style="width: 100%">
+              <el-table-column label="User" align="center">
+                <template #default="scope">
+                  <el-link
+                    @click="this.$router.push(`/user/${scope.row.name}`)"
+                  >
+                    {{
+                      scope.row.nickname ? scope.row.nickname : scope.row.name
+                    }}
+                  </el-link>
+                </template>
+              </el-table-column>
+              <el-table-column label="Codeforces" align="center">
+                <template #default="scope">
+                  <el-link
+                    type="primary"
+                    :href="`https://codeforces.com/profile/${scope.row.codeforces_handle}`"
+                    target="_blank"
+                    :underline="false"
+                  >
+                    <el-avatar
+                      v-show="scope.row.codeforces_avatar"
+                      :size="28"
+                      :src="getCodeforcesAvatar(scope.row)"
+                      style="margin-right: 6px"
+                    />
+                    {{ scope.row.codeforces_handle }}</el-link
+                  >
+                </template>
+              </el-table-column>
+              <el-table-column label="LeetCode" align="center">
+                <template #default="scope">
+                  <el-link
+                    type="primary"
+                    :href="`https://leetcode.cn/u/${scope.row.leetcode_handle}/`"
+                    target="_blank"
+                    :underline="false"
+                  >
+                    <el-avatar
+                      v-show="scope.row.leetcode_avatar"
+                      :size="28"
+                      :src="getLeetcodeAvatar(scope.row)"
+                      style="margin-right: 6px"
+                    />{{ scope.row.leetcode_handle }}</el-link
+                  >
+                </template>
+              </el-table-column>
+            </el-table>
+          </el-dialog>
+        </el-card>
+        <el-card
+          header="Career"
+          style="margin: 10px; text-align: center; height: 460px"
+        >
+          <el-container>
+            <el-aside width="66%"
+              ><div id="acSubmissionsType" style="height: 400px"></div>
+            </el-aside>
+            <el-container>
+              <el-header height="200px">
+                <div id="totalSubmissions" style="height: 200px"></div>
+              </el-header>
+              <el-main>
+                <el-tooltip
+                  effect="light"
+                  :content="`Top ${100 - careerPercentage}%`"
+                  placement="top"
+                >
+                  <el-progress
+                    style="height: 200px"
+                    type="dashboard"
+                    :percentage="careerPercentage"
+                  >
+                    <span
+                      style="
+                        display: block;
+                        margin-top: -48px;
+                        font-size: 18px;
+                        font-weight: 700;
+                        color: #464646;
+                      "
+                      >Rank:
+                      {{
+                        this.information.submissionStatus.career_ranking
+                      }}</span
+                    >
+                  </el-progress>
+                </el-tooltip>
+              </el-main>
+            </el-container>
+          </el-container>
+        </el-card>
+        <el-card
+          header="Activity"
+          style="margin: 10px; text-align: center; height: 540px"
+        >
+          <el-container style="height: 280px">
+            <el-aside width="66%" style="overflow: visible">
+              <div id="recentUserStatus" style="height: 280px"></div>
+            </el-aside>
+            <el-container>
+              <el-header height="120px" style="padding: 0">
+                <el-table :data="tableData" style="width: 100%">
+                  <el-table-column prop="type" label="Type" align="center" />
+                  <el-table-column prop="ac" label="AC" align="center" />
+                  <el-table-column prop="all" label="All" align="center" />
+                </el-table>
+              </el-header>
+              <el-main style="overflow: hidden">
+                <el-tooltip
+                  effect="light"
+                  :content="`Top ${100 - activePercentage}%`"
+                  placement="top"
+                >
+                  <el-progress
+                    style="height: 200px"
+                    type="dashboard"
+                    :percentage="activePercentage"
+                  >
+                    <span
+                      style="
+                        display: block;
+                        margin-top: -48px;
+                        font-size: 18px;
+                        font-weight: 700;
+                        color: #464646;
+                      "
+                      >Rank:
+                      {{
+                        this.information.submissionStatus.active_ranking
+                      }}</span
+                    >
+                  </el-progress>
+                </el-tooltip>
+              </el-main>
+            </el-container>
+          </el-container>
+          <div id="calendar" style="height: 180px"></div>
         </el-card>
         <el-card style="margin: 10px">
           <template #header>
@@ -198,24 +387,37 @@ import {
   getRatingColor,
   getFromNowTime,
 } from "@/logic/dataShowing";
+import { showCareerCharts, showActivityCharts } from "@/logic/chartDrawing";
 
 export default {
   data() {
     return {
       information: {
-        user: {
-          email: "",
-          qq: "",
-          about: "",
-          codeforce_handle: "",
-          codeforce_avatar: "",
-          leetcode_handle: "",
-          leetcode_avatar: "",
-        },
+        user: {},
         following: [],
         followers: [],
+        submissionStatus: {},
+        calendarSubmissions: [],
+        allUserSubmissionStatus: {},
       },
       recentAcSubmissions: [],
+      followingDialogVisible: false,
+      followersDialogVisible: false,
+      userNumber: 0,
+      tableData: [
+        {
+          type: "Week",
+          ac: 0,
+          all: 0,
+        },
+        {
+          type: "Month",
+          ac: 0,
+          all: 0,
+        },
+      ],
+      careerPercentage: 0,
+      activePercentage: 0,
     };
   },
   methods: {
@@ -224,6 +426,34 @@ export default {
     getProblemUrl,
     getRatingColor,
     getFromNowTime,
+    getTableData() {
+      this.tableData = [
+        {
+          type: "Week",
+          ac: this.information.submissionStatus.week_ac_submission_number,
+          all: this.information.submissionStatus.week_submission_number,
+        },
+        {
+          type: "Month",
+          ac: this.information.submissionStatus.month_ac_submission_number,
+          all: this.information.submissionStatus.month_submission_number,
+        },
+      ];
+    },
+    getPercentage() {
+      this.careerPercentage = (
+        100 -
+        (this.information.submissionStatus.career_ranking /
+          this.information.userNumber) *
+          100
+      ).toFixed(2);
+      this.activePercentage = (
+        100 -
+        (this.information.submissionStatus.active_ranking /
+          this.information.userNumber) *
+          100
+      ).toFixed(2);
+    },
   },
   created() {
     post(
@@ -233,6 +463,10 @@ export default {
       },
       (result) => {
         this.information = result;
+        showCareerCharts(this.information.submissionStatus);
+        showActivityCharts(this.information);
+        this.getTableData();
+        this.getPercentage();
       }
     );
     post(

@@ -58,27 +58,64 @@ router.post("/info", async (req, res) => {
       )
     )[0];
 
+    const userNumber = (
+      await query(`SELECT COUNT(*) as number FROM user`, req.body)
+    )[0].number;
+
     const id = user.id;
 
     const following = await query(
       `SELECT nickname, name, email, codeforces_handle, leetcode_handle,
 			user_id, follow_id, codeforces_avatar, leetcode_avatar 
 		  FROM user u, user_following f
-			WHERE user_id = '${id}' AND follow_id = u.id`
+			WHERE user_id = ${id} AND follow_id = u.id`
     );
 
     const followers = await query(
       `SELECT nickname, name, email, codeforces_handle, leetcode_handle,
 			user_id, follow_id, codeforces_avatar, leetcode_avatar 
 		  FROM user u, user_following f
-			WHERE follow_id = '${id}' AND user_id = u.id`
+			WHERE follow_id = ${id} AND user_id = u.id`
     );
+
+    const submissionStatus = (
+      await query(`SELECT * FROM user_daily_status WHERE user_Id = ${id};`)
+    )[0];
+
+    const calendarBeginTimestamp = new Date().getTime() / 1000 - 183 * 86400;
+
+    const calendarSubmissions = (
+      await query(
+        `SELECT submit_time FROM submission WHERE user_Id = ${id} 
+				AND status = 'Accepted' AND submit_time > ${calendarBeginTimestamp};`
+      )
+    ).map((item) => {
+      return item.submit_time;
+    });
+
+    const allUserSubmissionStatus = (
+      await query(`SELECT AVG(active_score) average_active_score,
+      AVG(week_ac_submission_number) average_week_ac_submission_number,
+      AVG(week_average_ac_rating) average_week_average_ac_rating,
+      AVG(month_ac_submission_number) average_month_ac_submission_number,
+      AVG(month_average_ac_rating) average_month_average_ac_rating,
+      MAX(active_score) max_active_score,
+      MAX(week_ac_submission_number) max_week_ac_submission_number,
+      MAX(week_average_ac_rating) max_week_average_ac_rating,
+      MAX(month_ac_submission_number) max_month_ac_submission_number,
+      MAX(month_average_ac_rating) max_month_average_ac_rating
+			FROM user_daily_status;`)
+    )[0];
 
     res.json(
       result({
         user,
+        userNumber,
         following,
         followers,
+        submissionStatus,
+        calendarSubmissions,
+        allUserSubmissionStatus,
       })
     );
   } catch (err) {

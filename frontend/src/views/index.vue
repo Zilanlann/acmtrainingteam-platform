@@ -68,7 +68,7 @@
             </el-icon>
             <span>Discussion</span>
           </el-menu-item>
-          <el-menu-item index="settings" route="/settings/following">
+          <el-menu-item index="settings" route="/settings">
             <el-icon>
               <Setting />
             </el-icon>

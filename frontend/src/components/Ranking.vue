@@ -134,12 +134,17 @@
           </template>
         </el-table-column>
       </el-table-column>
-      <el-table-column
-        prop="active_score"
-        sortable="custom"
-        label="Active Score"
-        align="center"
-      >
+      <el-table-column prop="active_score" sortable="custom" align="center">
+        <template #header>
+          <el-tooltip placement="top" effect="light"
+            ><template #content>
+              For AC submissions in 30 days:
+              <br />
+              Sum(Rating * (Time - 30 days ago)) * k
+            </template>
+            Active Score</el-tooltip
+          >
+        </template>
         <template #default="scope">
           <span :style="`color: ${getRatingColor(scope.row.active_score)}`">
             <div

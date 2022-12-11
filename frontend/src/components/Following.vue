@@ -58,7 +58,7 @@
           >
         </template>
       </el-table-column>
-      <el-table-column width="150px" align="center">
+      <el-table-column label="Operation" width="150px" align="center">
         <template #default="scope">
           <el-button
             size="small"

@@ -9,7 +9,7 @@
       <el-table-column label="User" align="center">
         <template #default="scope">
           <el-link @click="this.$router.push(`/user/${scope.row.name}`)">
-            {{ scope.row.nickname ? scope.row.nickname : scope.row.name }}
+            {{ scope.row.name }}
           </el-link>
         </template>
       </el-table-column>
@@ -85,12 +85,6 @@
             placeholder="Please select user"
           />
         </el-form-item>
-        <el-form-item label="Nickname" prop="nickname">
-          <el-input
-            v-model="followingToAdd.nickname"
-            placeholder="Enter nickname"
-          />
-        </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="onSubmit">Add</el-button>
         </el-form-item>
@@ -107,7 +101,6 @@ export default {
     return {
       followingToAdd: {
         user_id: "",
-        nickname: "",
       },
       tableData: [],
       userList: [],
@@ -116,14 +109,6 @@ export default {
           {
             required: true,
             message: "Please select user",
-            trigger: "blur",
-          },
-        ],
-        nickname: [
-          {
-            min: 3,
-            max: 12,
-            message: "Length should be 3 to 12",
             trigger: "blur",
           },
         ],
@@ -182,7 +167,6 @@ export default {
             {
               user_id: this.$cookies.get("token")?.id,
               follow_id: this.followingToAdd.user_id,
-              nickname: this.followingToAdd.nickname,
             },
             (result) => {
               this.$message.success({
@@ -191,7 +175,6 @@ export default {
               });
               this.followingToAdd = {
                 user_id: "",
-                nickname: "",
               };
             }
           );

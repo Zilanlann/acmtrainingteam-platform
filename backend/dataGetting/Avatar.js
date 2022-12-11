@@ -24,9 +24,3 @@ export default class Avatar {
     });
   }
 }
-// const result = await Avatar.getCodeforcesUserAvatars([
-//   "DmitriyH",
-//   "Fefer_Ivan",
-//   "wushenghao",
-// ]);
-// console.log(result);

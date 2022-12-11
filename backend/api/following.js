@@ -14,7 +14,7 @@ router.post("/add", async (req, res) => {
 
   try {
     await query(`INSERT INTO user_following SET ?`, req.body);
-    res.json(result(`Add following successfully.`));
+    res.json(result(`Follow successfully.`));
   } catch (err) {
     console.error(err);
     res.json(error(err));
@@ -34,7 +34,7 @@ router.post("/delete", async (req, res) => {
       `DELETE FROM user_following
 		WHERE user_id = ${req.body.user_id} AND follow_id = ${req.body.follow_id}`
     );
-    res.json(result(`Delete successfully.`));
+    res.json(result(`Unfollow successfully.`));
   } catch (err) {
     console.error(err);
     res.json(error(err));

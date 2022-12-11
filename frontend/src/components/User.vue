@@ -108,9 +108,7 @@
             <el-table :data="information.following" stripe style="width: 100%">
               <el-table-column label="User" align="center">
                 <template #default="scope">
-                  <el-link
-                    @click="this.$router.push(`/user/${scope.row.name}`)"
-                  >
+                  <el-link :href="`/user/${scope.row.name}`">
                     {{
                       scope.row.nickname ? scope.row.nickname : scope.row.name
                     }}
@@ -158,9 +156,7 @@
             <el-table :data="information.followers" stripe style="width: 100%">
               <el-table-column label="User" align="center">
                 <template #default="scope">
-                  <el-link
-                    @click="this.$router.push(`/user/${scope.row.name}`)"
-                  >
+                  <el-link :href="`/user/${scope.row.name}`">
                     {{
                       scope.row.nickname ? scope.row.nickname : scope.row.name
                     }}
@@ -458,58 +454,61 @@ export default {
         ).toFixed(2)
       );
     },
+    getPageData() {
+      post(
+        "/api/user/info",
+        {
+          user_name: this.$route.params.userName,
+        },
+        (result) => {
+          this.information = result;
+          if (!this.information.submissionStatus) {
+            this.information.submissionStatus = {
+              submission_number: 0,
+              ac_submission_number: 0,
+              easy_ac_submission_number: 0,
+              medium_ac_submission_number: 0,
+              hard_ac_submission_number: 0,
+              veryhard_ac_submission_number: 0,
+              hardcore_ac_submission_number: 0,
+              norating_ac_submission_number: 0,
+              average_ac_rating: 0,
+              month_submission_number: 0,
+              week_ac_submission_number: 0,
+              week_average_ac_rating: 0,
+              week_submission_number: 0,
+              month_ac_submission_number: 0,
+              month_average_ac_rating: 0,
+              active_score: 0,
+              career_ranking: 0,
+              active_ranking: 0,
+            };
+          }
+          showCareerCharts(this.information.submissionStatus);
+          showActivityCharts(this.information);
+          this.getWeekMonthData();
+          this.getPercentage();
+        }
+      );
+      post(
+        "/api/submissions",
+        {
+          condition: {
+            name: this.$route.params.userName,
+          },
+          page: 1,
+          filter: {
+            status: ["Accepted"],
+          },
+        },
+        (result) => {
+          this.recentAcSubmissions = result;
+        }
+      );
+    },
   },
   created() {
-    post(
-      "/api/user/info",
-      {
-        user_name: this.$route.params.userName,
-      },
-      (result) => {
-        this.information = result;
-        if (!this.information.submissionStatus) {
-          this.information.submissionStatus = {
-            submission_number: 0,
-            ac_submission_number: 0,
-            easy_ac_submission_number: 0,
-            medium_ac_submission_number: 0,
-            hard_ac_submission_number: 0,
-            veryhard_ac_submission_number: 0,
-            hardcore_ac_submission_number: 0,
-            norating_ac_submission_number: 0,
-            average_ac_rating: 0,
-            month_submission_number: 0,
-            week_ac_submission_number: 0,
-            week_average_ac_rating: 0,
-            week_submission_number: 0,
-            month_ac_submission_number: 0,
-            month_average_ac_rating: 0,
-            active_score: 0,
-            career_ranking: 0,
-            active_ranking: 0,
-          };
-        }
-        showCareerCharts(this.information.submissionStatus);
-        showActivityCharts(this.information);
-        this.getWeekMonthData();
-        this.getPercentage();
-      }
-    );
-    post(
-      "/api/submissions",
-      {
-        condition: {
-          name: this.$route.params.userName,
-        },
-        page: 1,
-        filter: {
-          status: ["Accepted"],
-        },
-      },
-      (result) => {
-        this.recentAcSubmissions = result;
-      }
-    );
+    this.getPageData();
   },
 };
 </script>

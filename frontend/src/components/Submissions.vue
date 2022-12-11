@@ -126,7 +126,13 @@
       </template>
     </el-dialog>
     <el-divider style="margin: 0" />
-    <el-table :data="tableData" stripe style="width: 100%">
+    <el-table
+      :data="tableData"
+      stripe
+      style="width: 100%"
+      @sort-change="sortChange"
+      :default-sort="{ prop: 'submit_time', order: 'descending' }"
+    >
       <el-table-column width="26px" style="padding: 0">
         <template #default="scope">
           <img
@@ -145,17 +151,27 @@
           />
         </template>
       </el-table-column>
-      <el-table-column label="Problem" align="center">
+      <el-table-column
+        prop="title"
+        sortable="custom"
+        label="Problem"
+        align="center"
+      >
         <template #default="scope">
           <el-link
             type="primary"
             :href="getProblemUrl(scope.row)"
             target="_blank"
-            >{{ scope.row.title }}</el-link
+            >{{ scope.row.title ? scope.row.title : "No Title" }}</el-link
           >
         </template>
       </el-table-column>
-      <el-table-column label="User" align="center">
+      <el-table-column
+        prop="user_name"
+        sortable="custom"
+        label="User"
+        align="center"
+      >
         <template #default="scope">
           <el-link
             :underline="false"
@@ -174,16 +190,26 @@
           </el-link>
         </template>
       </el-table-column>
-      <el-table-column label="Rating" align="center">
+      <el-table-column
+        prop="rating"
+        sortable="custom"
+        label="Rating"
+        align="center"
+      >
         <template #default="scope">
           <span :style="`color: ${getRatingColor(scope.row.rating)}`">
             <div :class="scope.row.rating >= 3000 ? `first-letter-black` : ``">
-              {{ scope.row.rating }}
+              {{ scope.row.rating ? scope.row.rating : "No rating" }}
             </div>
           </span>
         </template>
       </el-table-column>
-      <el-table-column label="Status" align="center">
+      <el-table-column
+        prop="status"
+        sortable="custom"
+        label="Status"
+        align="center"
+      >
         <template #default="scope">
           <el-link
             :type="getStatusColor(scope.row.status)"
@@ -210,7 +236,12 @@
           </el-link>
         </template>
       </el-table-column>
-      <el-table-column label="Time" align="center">
+      <el-table-column
+        prop="submit_time"
+        sortable="custom"
+        label="Time"
+        align="center"
+      >
         <template #default="scope">
           {{ getFromNowTime(scope.row.submit_time) }}
         </template>
@@ -255,6 +286,7 @@ export default {
       requestBody: {
         condition: {},
         page: 1,
+        order: { prop: "submit_time", order: "descending" },
       },
       shortcuts: [
         {
@@ -360,6 +392,12 @@ export default {
       post("/api/submissions", this.requestBody, (result) => {
         this.tableData = result;
       });
+    },
+    sortChange({ prop, order }) {
+      this.requestBody.order = {
+        prop,
+        order,
+      };
     },
   },
   watch: {

@@ -95,7 +95,12 @@
       </template>
     </el-dialog>
     <el-divider style="margin: 0" />
-    <el-table :data="tableData" stripe style="width: 100%">
+    <el-table
+      @sort-change="sortChange"
+      :data="tableData"
+      stripe
+      style="width: 100%"
+    >
       <el-table-column width="26px" style="padding: 0">
         <template #default="scope">
           <img
@@ -114,21 +119,31 @@
           />
         </template>
       </el-table-column>
-      <el-table-column label="Problem" align="center">
+      <el-table-column
+        prop="title"
+        sortable="custom"
+        label="Problem"
+        align="center"
+      >
         <template #default="scope">
           <el-link
             type="primary"
             :href="getProblemUrl(scope.row)"
             target="_blank"
-            >{{ scope.row.title }}</el-link
+            >{{ scope.row.title ? scope.row.title : "No Title" }}</el-link
           >
         </template>
       </el-table-column>
-      <el-table-column label="Rating" align="center">
+      <el-table-column
+        label="Rating"
+        align="center"
+        prop="rating"
+        sortable="custom"
+      >
         <template #default="scope">
           <span :style="`color: ${getRatingColor(scope.row.rating)}`">
             <div :class="scope.row.rating >= 3000 ? `first-letter-black` : ``">
-              {{ scope.row.rating }}
+              {{ scope.row.rating ? scope.row.rating : "No rating" }}
             </div>
           </span>
         </template>
@@ -178,7 +193,6 @@ export default {
   data() {
     return {
       tableData: [],
-      condition: null,
       dialogVisible: false,
       filterOptions: [],
       filter: {
@@ -213,7 +227,9 @@ export default {
       this.dialogVisible = false;
     },
     addTag(tag) {
-      this.filter.tags.push(tag);
+      if (!this.filter.tags.includes(tag)) {
+        this.filter.tags.push(tag);
+      }
       if (!this.filterOptions.includes("Tags")) {
         this.filterOptions.push("Tags");
       }
@@ -224,6 +240,12 @@ export default {
         this.requestBody.filter.tags.push(tag);
       }
       this.getTableData();
+    },
+    sortChange({ prop, order }) {
+      this.requestBody.order = {
+        prop,
+        order,
+      };
     },
   },
   watch: {

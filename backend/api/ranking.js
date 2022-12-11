@@ -1,6 +1,7 @@
 import express from "express";
 import query from "../dbQuery.js";
 import { result, error } from "./tools/apiDataFormat.js";
+import getOrderSql from "./tools/getOrderSql.js";
 
 const router = express.Router();
 
@@ -27,15 +28,6 @@ async function getAddtionalSql(filter, userId) {
   return addtionalSql;
 }
 
-function getOrderSql(order) {
-  if (!order?.order) {
-    return "";
-  }
-  return `ORDER BY ${order.prop} ${
-    order.order === "descending" ? "DESC" : "ASC"
-  }`;
-}
-
 // $route  POST api/ranking
 // @access public
 router.post("/", async (req, res) => {
@@ -45,7 +37,6 @@ router.post("/", async (req, res) => {
   }
   const addtionalSql = await getAddtionalSql(req.body.filter, req.body.user_id);
   const orderSql = getOrderSql(req.body.order);
-  console.log(req.body.order);
   const sql = `SELECT user_id, name user_name, 
 			leetcode_avatar, codeforces_avatar, active_score,
 			week_submission_number, week_ac_submission_number, week_average_ac_rating,

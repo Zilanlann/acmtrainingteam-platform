@@ -1,6 +1,11 @@
 <template>
   <el-container style="height: 100%">
-    <el-table :data="tableData" stripe style="width: 100%">
+    <el-table
+      :data="tableData"
+      stripe
+      style="width: 100%"
+      @sort-change="sortChange"
+    >
       <el-table-column label="User" align="center">
         <template #default="scope">
           <el-link @click="this.$router.push(`/user/${scope.row.name}`)">
@@ -8,7 +13,12 @@
           </el-link>
         </template>
       </el-table-column>
-      <el-table-column label="Codeforces" align="center">
+      <el-table-column
+        label="Codeforces"
+        align="center"
+        prop="codeforces_handle"
+        sortable="custom"
+      >
         <template #default="scope">
           <el-link
             type="primary"
@@ -26,7 +36,12 @@
           >
         </template>
       </el-table-column>
-      <el-table-column label="LeetCode" align="center">
+      <el-table-column
+        label="LeetCode"
+        align="center"
+        prop="leetcode_handle"
+        sortable="custom"
+      >
         <template #default="scope">
           <el-link
             type="primary"
@@ -113,6 +128,10 @@ export default {
           },
         ],
       },
+      order: {
+        prop: "",
+        order: "",
+      },
     };
   },
   methods: {
@@ -123,6 +142,7 @@ export default {
         "/api/following/list",
         {
           user_id: this.$cookies.get("token")?.id,
+          order: this.order,
         },
         (result) => {
           this.tableData = result;
@@ -144,6 +164,13 @@ export default {
           });
         }
       );
+    },
+    sortChange({ prop, order }) {
+      this.order = {
+        prop,
+        order,
+      };
+      this.getFollowingList();
     },
     onSubmit() {
       const formEl = this.$refs.formRef;

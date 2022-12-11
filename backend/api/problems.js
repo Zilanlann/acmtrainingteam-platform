@@ -1,6 +1,7 @@
 import express from "express";
 import query from "../dbQuery.js";
 import { result, error } from "./tools/apiDataFormat.js";
+import getOrderSql from "./tools/getOrderSql.js";
 
 const router = express.Router();
 
@@ -34,11 +35,12 @@ router.post("/", async (req, res) => {
     return;
   }
   const addtionalSql = getAddtionalSql(req.body?.filter, req.body?.search);
+  const orderSql = getOrderSql(req.body.order);
   try {
     const queryResult = await query(
       `SELECT id as problem_id, leetcode_problem_id, codeforces_problem_id,
        title, title_slug, rating, tags
-			 FROM problem WHERE 1 = 1 ${addtionalSql}
+			 FROM problem WHERE 1 = 1 ${addtionalSql} ${orderSql}
 			 LIMIT ${15 * (req.body.page - 1)}, 15`
     );
     res.json(result(queryResult));

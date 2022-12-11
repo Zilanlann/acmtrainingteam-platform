@@ -1,6 +1,7 @@
 import express from "express";
 import query from "../dbQuery.js";
 import { result, error } from "./tools/apiDataFormat.js";
+import getOrderSql from "./tools/getOrderSql.js";
 
 const router = express.Router();
 
@@ -49,11 +50,13 @@ router.post("/list", async (req, res) => {
     return;
   }
   try {
+    const orderSql = getOrderSql(req.body.order);
+    console.log(req.body.order);
     const selectResult = await query(
       `SELECT nickname, name, email, codeforces_handle, leetcode_handle,
 			user_id, follow_id, codeforces_avatar, leetcode_avatar 
-		  FROM user u, user_following f WHERE ? AND follow_id = u.id`,
-      req.body
+		  FROM user u, user_following f
+			WHERE user_id = ${req.body.user_id} AND follow_id = u.id ${orderSql}`
     );
     res.json(result(selectResult));
   } catch (err) {

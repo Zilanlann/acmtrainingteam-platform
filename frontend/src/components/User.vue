@@ -500,6 +500,7 @@ export default {
           filter: {
             status: ["Accepted"],
           },
+          order: { prop: "submit_time", order: "descending" },
         },
         (result) => {
           this.recentAcSubmissions = result;

@@ -10,6 +10,7 @@ services:
       - ./mysql/data:/var/lib/mysql
       - ./mysql/logs:/logs
       - ./mysql/conf:/etc/mysql/conf.d
+      - ./schema.sql:/docker-entrypoint-initdb.d/schema.sql
     environment:
       MYSQL_ROOT_PASSWORD: 123456
     ports:

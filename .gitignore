@@ -8,6 +8,7 @@ bin-release/
 leancloud-functions/
 project-leancloud/
 .settings/
+mysql/
 
 # Executables
 *.swf

@@ -96,7 +96,7 @@ create table user
     password          varchar(64)                            not null,
     email             varchar(64)                            not null,
     qq                varchar(12)                            null,
-    about             varchar(100) default '马骏老师真牛！'         null comment 'Describe yourself in one sentence.',
+    about             varchar(100) default 'ACM is very interesting :)'         null comment 'Describe yourself in one sentence.',
     codeforces_handle varchar(24)                            null,
     codeforces_avatar varchar(50)                            null,
     leetcode_handle   varchar(30)                            null,

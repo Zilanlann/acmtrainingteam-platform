@@ -2,12 +2,33 @@ import fetch from "node-fetch";
 
 export default class Avatar {
   static async getLeetcodeUserAvatar(userName) {
-    const url = `https://leetcode.cn/u/${userName}`;
-    const response = await fetch(url);
-    const result = await response.text();
-    const pattern =
-      /"image":{"@type":"ImageObject","contentUrl":"https:\/\/assets.leetcode.cn\/aliyun-lc-upload\/.+?.png/;
-    return pattern.exec(result.substring(660, 1500))[0].substring(89);
+    const graphql = JSON.stringify({
+      query: `query userProfilePublicProfile($userSlug: String!) {
+				userProfilePublicProfile(userSlug: $userSlug) {
+					profile{
+						userAvatar
+					}
+				}
+			}`,
+      variables: { userSlug: userName },
+    });
+    const requestOptions = {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: graphql,
+    };
+    const response = await fetch(
+      "https://leetcode.cn/graphql/",
+      requestOptions
+    );
+    const result = await response.json();
+    const avatar =
+      result?.data?.userProfilePublicProfile?.profile?.userAvatar.substring(44);
+    console.log(avatar);
+    if (!avatar) {
+      throw new Error(`LeetCode user ${userName} may not exist`);
+    }
+    return avatar;
   }
 
   static async getCodeforcesUserAvatars(handleArray) {

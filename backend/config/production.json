@@ -1,6 +1,6 @@
 {
     "dbConfig": {
-        "host": "localhost",
+        "host": "database_container",
         "user": "root",
         "password": "123456",
         "database": "acm_training_platform"

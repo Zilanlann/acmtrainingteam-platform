@@ -1,7 +1,7 @@
 version: '3.2'
 
 services:
-  db:
+  database:
     container_name: database_container
     image: mysql:8.0.31
     command: --default-authentication-plugin=mysql_native_password
@@ -16,3 +16,17 @@ services:
     ports:
       - target: 3306
         published: 3306
+  backend:
+    container_name: backend_container
+    image: node:16.19.0
+    command: node /backend.js
+    restart: always
+    volumes: 
+      - ../backend/dist/backend.js:/backend.js
+    environment:
+      NODE_ENV: production
+    ports:
+      - target: 5000
+        published: 5000
+    depends_on:
+      - database

@@ -24,6 +24,11 @@ app.use("/api/ranking", ranking);
 
 const port = config.get("serverPort") || 5000;
 
+app.get("/test", function (req, res) {
+  res.send("test");
+  console.log("test");
+});
+
 app.listen(port, () => {
   console.log(`Server is running on PORT ${port}.`);
 });

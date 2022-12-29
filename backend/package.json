@@ -19,6 +19,7 @@
   },
   "type": "module",
   "devDependencies": {
+    "node-config-webpack": "^1.0.10",
     "webpack": "^5.75.0",
     "webpack-cli": "^5.0.1"
   }

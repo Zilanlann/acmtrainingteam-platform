@@ -7,11 +7,14 @@ const __dirnameNew = path.dirname(__filenameNew);
 
 export default {
   mode: "production",
-  entry: "./server.js",
+  entry: {
+    backend: "./server.js",
+    refresh: "./autoRefresh.js",
+  },
   target: "node",
   output: {
     path: path.resolve(__dirnameNew, "dist"),
-    filename: "backend.js",
+    filename: "[name].js",
   },
   optimization: {
     minimizer: [new TerserPlugin({ terserOptions: { mangle: false } })],

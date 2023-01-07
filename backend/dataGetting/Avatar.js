@@ -31,17 +31,14 @@ export default class Avatar {
     return avatar;
   }
 
-  static async getCodeforcesUserAvatars(handleArray) {
-    const url = `https://codeforces.com/api/user.info?handles=${handleArray.join(
-      ";"
-    )}`;
-    const response = await fetch(url);
-    const result = await response.json();
-    return result.result.map((item) => {
-      return {
-        codeforces_handle: item.handle,
-        codeforces_avatar: item.avatar.substring(31),
-      };
-    });
+  static async getCodeforcesUserAvatar(handle) {
+    const url = `https://codeforces.com/api/user.info?handles=${handle}`;
+		const response = await fetch(url);
+		const result = await response.json();
+    if (result.status === "OK") {
+      return result?.result[0]?.avatar?.substring(31);
+    } else {
+      throw new Error(result?.comment);
+    }
   }
 }

@@ -11,6 +11,9 @@ services:
       - ./mysql/logs:/logs
       - ./mysql/conf:/etc/mysql/conf.d
       - ./schema.sql:/docker-entrypoint-initdb.d/schema.sql
+    ports:
+      - target: 3306
+        published: 3307
     environment:
       MYSQL_ROOT_PASSWORD: 123456
   backend:
@@ -27,6 +30,15 @@ services:
         published: 5000
     depends_on:
       - database
+  refresh:
+    container_name: refresh_container
+    image: node:16.19.0
+    command: node /refresh.js
+    restart: always
+    volumes: 
+      - ../backend/dist/refresh.js:/refresh.js
+    depends_on:
+      - database
   frontend:
     container_name: frontend_container
     image: nginx:1.23.3
@@ -36,6 +48,6 @@ services:
       - ./nginx_container.conf:/etc/nginx/conf.d/default.conf
     ports:
       - target: 80
-        published: 8080
+        published: 80
     depends_on:
       - backend

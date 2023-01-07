@@ -6,6 +6,7 @@ import {
   CodeforcesTransformer,
   Avatar,
 } from "./dataGetting/index.js";
+import { scheduleJob } from "node-schedule";
 
 // Codeforces refreshing
 async function refreshCodeforces() {
@@ -124,24 +125,38 @@ async function refreshCodeforcesAvatar() {
     const codeforcesRow = await connection.query(
       "SELECT codeforces_handle FROM user WHERE codeforces_handle is not NULL"
     );
-    const codeforcesHandleArray = codeforcesRow.map((item) => {
-      return item.codeforces_handle;
-    });
-    const avatars = await Avatar.getCodeforcesUserAvatars(
-      codeforcesHandleArray
-    );
-    avatars.forEach((user) => {
-      connection.query(`UPDATE user SET codeforces_avatar = '${user.codeforces_avatar}'
-			WHERE codeforces_handle = '${user.codeforces_handle}'`);
+    codeforcesRow.forEach((row, index) => {
+      setTimeout(async () => {
+        try {
+          const handle = row.codeforces_handle;
+          const avatar = await Avatar.getCodeforcesUserAvatar(handle);
+          await connection.query(`UPDATE user SET codeforces_avatar = '${handle}'
+        	WHERE codeforces_handle = '${avatar}'`);
+          console.log(`Avatar: ${handle} ${avatar}`);
+        } catch (err) {
+          console.error(`ERROR of Codeforces Avatar: ${row.codeforces_handle}`);
+          console.error(err);
+        }
+      }, index * 2000);
     });
   } catch (err) {
-    console.error(`ERROR of LeetCode: ${row.leetcode_handle}`);
     console.error(err);
   }
 }
+
+scheduleJob("0 * * * *", () => {
+  refreshCodeforces();
+  refreshLeetcode();
+});
+
+scheduleJob("30 0 * * *", () => {
+  refreshLeetcodeAvatar();
+  refreshCodeforcesAvatar();
+  refreshUserDailyStatus();
+});
 
 // refreshCodeforces();
 // refreshLeetcode();
 // refreshLeetcodeAvatar();
 // refreshCodeforcesAvatar();
-refreshUserDailyStatus();
+// refreshUserDailyStatus();

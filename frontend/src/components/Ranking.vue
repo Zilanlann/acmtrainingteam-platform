@@ -176,10 +176,12 @@
     <el-pagination
       style="margin: 0 auto"
       v-model:current-page="page"
-      :page-size="15"
+      :page-sizes="[15, 30, 50, 100]"
+      :page-size="size"
       :pager-count="11"
-      layout="prev, pager, next"
-      :total="150"
+      layout="prev, pager, next, sizes"
+      :page-count="10"
+      @size-change="handleSizeChange"
     />
   </el-container>
 </template>
@@ -195,6 +197,7 @@ export default {
   data() {
     return {
       page: 1,
+      size: 15,
       tableData: [],
       following: [],
       filter: [],
@@ -248,6 +251,10 @@ export default {
         }
       );
     },
+    handleSizeChange(size) {
+      this.size = size;
+      this.getRanking();
+    },
     filterChange(filters) {
       this.filter = Object.values(filters)[0];
       this.getRanking();
@@ -263,6 +270,7 @@ export default {
       post(
         "/api/ranking",
         {
+          size: this.size,
           page: this.page,
           filter: this.filter,
           user_id: this.$cookies.get("token")?.id,

@@ -31,7 +31,7 @@ async function getAddtionalSql(filter, userId) {
 // $route  POST api/ranking
 // @access public
 router.post("/", async (req, res) => {
-  if (!req.body.page && !req.body.filter) {
+  if (!req.body.page && !req.body.filter && !req.body.size) {
     res.json(error(`Data is not in the correct format.`));
     return;
   }
@@ -43,7 +43,7 @@ router.post("/", async (req, res) => {
 			month_submission_number, month_ac_submission_number, month_average_ac_rating
 			FROM user_daily_status s, user u
 			WHERE user_id = u.id ${addtionalSql} ${orderSql}
-			LIMIT ${15 * (req.body.page - 1)}, 15`;
+			LIMIT ${req.body.size * (req.body.page - 1)}, ${req.body.size}`;
 
   try {
     const queryResult = await query(sql);

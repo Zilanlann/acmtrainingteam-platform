@@ -4,6 +4,7 @@
   "description": "the backend of the platform",
   "main": "server.js",
   "scripts": {
+		"refresh": "set NODE_ENV=development&&node autoRefresh.js",
     "serve": "set NODE_ENV=development&&nodemon server.js",
     "build": "set NODE_ENV=production&&webpack"
   },

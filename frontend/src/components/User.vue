@@ -244,7 +244,7 @@
           </el-container>
         </el-card>
         <el-card
-          header="Activity"
+          header="Activeness"
           style="margin: 10px; text-align: center; height: 540px"
         >
           <el-container style="height: 280px">

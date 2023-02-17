@@ -43,11 +43,11 @@
             </el-icon>
             <span>Ranking</span>
           </el-menu-item>
-          <el-menu-item index="following" route="/following">
+          <el-menu-item index="list" route="/list">
             <el-icon>
               <View />
             </el-icon>
-            <span>Following</span>
+            <span>View List</span>
           </el-menu-item>
           <el-menu-item index="problems" route="/problems">
             <el-icon>

@@ -3,7 +3,7 @@ import config from "config";
 import bodyParser from "body-parser";
 import {
   user,
-  following,
+  list,
   submissions,
   problems,
   tags,
@@ -16,7 +16,7 @@ const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 app.use("/api/user", user);
-app.use("/api/following", following);
+app.use("/api/list", list);
 app.use("/api/submissions", submissions);
 app.use("/api/problems", problems);
 app.use("/api/tags", tags);

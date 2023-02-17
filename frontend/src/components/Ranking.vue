@@ -19,22 +19,6 @@
         ]"
       >
         <template #default="scope">
-          <el-button
-            link
-            v-if="!following.includes(scope.row.user_id)"
-            style="float: left; margin-right: -8px; margin-top: 2px"
-            @click="follow(scope.row.user_id)"
-          >
-            <el-icon :size="18"><Star /> </el-icon>
-          </el-button>
-          <el-button
-            v-else
-            link
-            style="float: left; margin-left: -2px; margin-right: -10px"
-            @click="unfollow(scope.row.user_id)"
-          >
-            <el-icon color="#ffab00" :size="22"><StarFilled /> </el-icon>
-          </el-button>
           <el-link
             @click="this.$router.push(`/user/${scope.row.user_name}`)"
             :underline="false"
@@ -199,7 +183,6 @@ export default {
       page: 1,
       size: 15,
       tableData: [],
-      following: [],
       filter: [],
       order: {
         prop: "active_score",
@@ -211,46 +194,6 @@ export default {
     getLeetcodeAvatar,
     getCodeforcesAvatar,
     getRatingColor,
-    unfollow(followId) {
-      if (!this.$cookies.get("token")?.id) {
-        this.$message.error("Please sign in first!");
-        return;
-      }
-      post(
-        "/api/following/delete",
-        {
-          user_id: this.$cookies.get("token")?.id,
-          follow_id: followId,
-        },
-        (result) => {
-          this.$message.success({
-            message: result,
-            duration: 1000,
-          });
-          this.getFollowingList();
-        }
-      );
-    },
-    follow(followId) {
-      if (!this.$cookies.get("token")?.id) {
-        this.$message.error("Please sign in first!");
-        return;
-      }
-      post(
-        "/api/following/add",
-        {
-          user_id: this.$cookies.get("token")?.id,
-          follow_id: followId,
-        },
-        (result) => {
-          this.$message.success({
-            message: result,
-            duration: 1000,
-          });
-          this.getFollowingList();
-        }
-      );
-    },
     handleSizeChange(size) {
       this.size = size;
       this.getRanking();
@@ -281,21 +224,6 @@ export default {
         }
       );
     },
-    getFollowingList() {
-      if (this.$cookies.get("token")?.id) {
-        post(
-          "/api/following/list",
-          {
-            user_id: this.$cookies.get("token")?.id,
-          },
-          (result) => {
-            this.following = result.map((item) => {
-              return item.follow_id;
-            });
-          }
-        );
-      }
-    },
   },
   watch: {
     page() {
@@ -304,7 +232,6 @@ export default {
   },
   async created() {
     this.getRanking();
-    this.getFollowingList();
   },
 };
 </script>

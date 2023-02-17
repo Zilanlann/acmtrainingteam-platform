@@ -3,12 +3,13 @@ import Index from "@/views/Index.vue";
 import SignIn from "@/components/SignIn.vue";
 import Ranking from "@/components/Ranking.vue";
 import Discussion from "@/components/Discussion.vue";
-import Following from "@/components/Following.vue";
+import ListDetails from "@/components/ListDetails.vue";
 import Problems from "@/components/Problems.vue";
 import Settings from "@/components/Settings.vue";
 import User from "@/components/User.vue";
 import Submissions from "@/components/Submissions.vue";
 import Register from "@/components/Register.vue";
+import List from "@/components/List.vue";
 
 const routes = [
   {
@@ -22,14 +23,12 @@ const routes = [
       { path: "/signin", component: SignIn },
       { path: "/ranking", component: Ranking },
       { path: "/discussion", component: Discussion },
-      { path: "/following", component: Following },
+      { path: "/list", component: List },
+      { path: "/list/:listId/:listName", component: ListDetails },
       { path: "/problems", component: Problems },
       { path: "/problems/tag", component: Problems },
       { path: "/problems/tag/:tag", component: Problems },
-      {
-        path: "/settings",
-        component: Settings,
-      },
+      { path: "/settings", component: Settings },
       { path: "/user", component: User },
       { path: "/user/:userName", component: User },
       { path: "/submissions/user/:userName", component: Submissions },

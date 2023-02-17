@@ -1,11 +1,16 @@
 <template>
   <el-container style="height: 100%">
-    <el-table
-      :data="tableData"
-      stripe
-      style="width: 100%"
-      @sort-change="sortChange"
-    >
+    <el-header>
+      <el-page-header @back="this.$router.back()">
+        <template #content>
+          <span class="text-large font-600 mr-3">
+            <span> List {{ $route.params.listName }}</span>
+          </span>
+        </template>
+      </el-page-header>
+    </el-header>
+    <el-divider style="margin: 0" />
+    <el-table :data="tableData" stripe style="width: 100%">
       <el-table-column label="User" align="center">
         <template #default="scope">
           <el-link @click="this.$router.push(`/user/${scope.row.name}`)">
@@ -17,7 +22,7 @@
         label="Codeforces"
         align="center"
         prop="codeforces_handle"
-        sortable="custom"
+        sortable
       >
         <template #default="scope">
           <el-link
@@ -40,7 +45,7 @@
         label="LeetCode"
         align="center"
         prop="leetcode_handle"
-        sortable="custom"
+        sortable
       >
         <template #default="scope">
           <el-link
@@ -63,7 +68,7 @@
           <el-button
             size="small"
             type="danger"
-            @click="onDelete(scope.row.follow_id)"
+            @click="onDelete(scope.row.user_id)"
             >Delete</el-button
           >
         </template>
@@ -72,14 +77,14 @@
     <el-footer height="60px" style="padding: 10px">
       <el-form
         :inline="true"
-        :model="followingToAdd"
+        :model="userToAdd"
         :rules="rules"
         ref="formRef"
         style="text-align: center"
       >
         <el-form-item label="User" prop="user_id">
           <el-select-v2
-            v-model="followingToAdd.user_id"
+            v-model="userToAdd.user_id"
             filterable
             :options="userList"
             placeholder="Please select user"
@@ -99,7 +104,7 @@ import { getLeetcodeAvatar, getCodeforcesAvatar } from "@/logic/dataShowing";
 export default {
   data() {
     return {
-      followingToAdd: {
+      userToAdd: {
         user_id: "",
       },
       tableData: [],
@@ -113,21 +118,16 @@ export default {
           },
         ],
       },
-      order: {
-        prop: "",
-        order: "",
-      },
     };
   },
   methods: {
     getLeetcodeAvatar,
     getCodeforcesAvatar,
-    getFollowingList() {
+    getTableData() {
       post(
-        "/api/following/list",
+        "/api/list/getuser",
         {
-          user_id: this.$cookies.get("token")?.id,
-          order: this.order,
+          list_id: this.$route.params.listId,
         },
         (result) => {
           this.tableData = result;
@@ -136,9 +136,9 @@ export default {
     },
     getUserList() {
       post(
-        "/api/following/userlisttofollow",
+        "/api/list/usertoadd",
         {
-          user_id: this.$cookies.get("token")?.id,
+          list_id: this.$route.params.listId,
         },
         (result) => {
           this.userList = result.map((item) => {
@@ -150,45 +150,38 @@ export default {
         }
       );
     },
-    sortChange({ prop, order }) {
-      this.order = {
-        prop,
-        order,
-      };
-      this.getFollowingList();
-    },
     onSubmit() {
       const formEl = this.$refs.formRef;
       if (!formEl) return;
-      formEl.validate(async (valid) => {
+      formEl.validate((valid) => {
         if (valid) {
-          await post(
-            "/api/following/add",
+          post(
+            "/api/list/adduser",
             {
-              user_id: this.$cookies.get("token")?.id,
-              follow_id: this.followingToAdd.user_id,
+              list_id: this.$route.params.listId,
+              user_id: this.userToAdd.user_id,
             },
             (result) => {
               this.$message.success({
                 message: result,
                 duration: 1000,
               });
-              this.followingToAdd = {
+              this.userToAdd = {
                 user_id: "",
               };
+              this.getUserList();
+              this.getTableData();
             }
           );
-          this.getUserList();
-          this.getFollowingList();
         }
       });
     },
-    async onDelete(followId) {
+    async onDelete(userId) {
       await post(
-        "/api/following/delete",
+        "/api/list/deleteuser",
         {
-          user_id: this.$cookies.get("token")?.id,
-          follow_id: followId,
+          list_id: this.$route.params.listId,
+          user_id: userId,
         },
         (result) => {
           this.$message.success({
@@ -198,7 +191,7 @@ export default {
         }
       );
       this.getUserList();
-      this.getFollowingList();
+      this.getTableData();
     },
   },
   async created() {
@@ -206,7 +199,7 @@ export default {
       return;
     }
     this.getUserList();
-    this.getFollowingList();
+    this.getTableData();
   },
 };
 </script>

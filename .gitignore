@@ -9,6 +9,8 @@ leancloud-functions/
 project-leancloud/
 .settings/
 mysql/
+node_modules/
+openwhisk/
 
 # Executables
 *.swf

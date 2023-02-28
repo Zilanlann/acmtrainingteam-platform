@@ -15,7 +15,6 @@
           <el-popconfirm
             confirm-button-text="Yes"
             cancel-button-text="No"
-            :icon="InfoFilled"
             title="Sure to delete?"
             @confirm="onDelete(scope.row.id)"
           >

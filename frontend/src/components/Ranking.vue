@@ -13,10 +13,7 @@
         align="center"
         prop="name"
         sortable="custom"
-        :filters="[
-          { text: 'Following', value: 'Following' },
-          { text: 'Unfollowing', value: 'Unfollowing' },
-        ]"
+        :filters="lists"
       >
         <template #default="scope">
           <el-link
@@ -188,6 +185,7 @@ export default {
         prop: "active_score",
         order: "descending",
       },
+      lists: [],
     };
   },
   methods: {
@@ -216,11 +214,23 @@ export default {
           size: this.size,
           page: this.page,
           filter: this.filter,
-          user_id: this.$cookies.get("token")?.id,
           order: this.order,
         },
         (result) => {
           this.tableData = result;
+        }
+      );
+    },
+    getList() {
+      post(
+        "/api/list/getlist",
+        {
+          user_id: this.$cookies.get("token")?.id,
+        },
+        (result) => {
+          this.lists = result.map((item) => {
+            return { text: item.list_name, value: item.id };
+          });
         }
       );
     },
@@ -232,6 +242,9 @@ export default {
   },
   async created() {
     this.getRanking();
+    if (this.$cookies.get("token")?.id) {
+      this.getList();
+    }
   },
 };
 </script>

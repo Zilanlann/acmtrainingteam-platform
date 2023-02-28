@@ -47,7 +47,7 @@
             <el-icon>
               <View />
             </el-icon>
-            <span>View List</span>
+            <span>Follow List</span>
           </el-menu-item>
           <el-menu-item index="problems" route="/problems">
             <el-icon>

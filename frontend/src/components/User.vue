@@ -509,7 +509,9 @@ export default {
     },
   },
   created() {
-    this.getPageData();
+    if (this.$route.params.userName) {
+      this.getPageData();
+    }
   },
 };
 </script>

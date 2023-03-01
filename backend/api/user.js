@@ -4,6 +4,13 @@ import { result, error } from "./tools/apiDataFormat.js";
 
 const router = express.Router();
 
+async function adminAuth(password) {
+  const selectPassword = await query(
+    `SELECT password FROM user WHERE id = 9999`
+  );
+  return password && password === selectPassword[0]?.password;
+}
+
 // $route  POST api/user/register
 // @access public
 router.post("/register", async (req, res) => {
@@ -122,6 +129,50 @@ router.post("/info", async (req, res) => {
     console.error(err);
     res.json(error(err));
   }
+});
+
+// $route  POST api/user/update
+// @access private or admin
+router.post("/update", async (req, res) => {
+  try {
+    if (!(req.body.auth && req.body.info)) {
+      res.json(error(`Data is not in the correct format.`));
+      return;
+    }
+    const selectResult = await query(
+      `SELECT id, password FROM user WHERE id = ${req.body.auth.id}`
+    );
+    if (
+      selectResult.length === 0 ||
+      selectResult[0].password !== req.body.auth.password ||
+      (req.body.auth.id !== 9999 && req.body.auth.name !== req.body.info.name)
+    ) {
+      res.json(error("Wrong authorization."));
+      return;
+    }
+    await query(
+      `UPDATE user SET ? WHERE name = '${req.body.info.name}'`,
+      req.body.info
+    );
+    res.json(
+      result(`Information of ${req.body.info.name} has updated successfully.`)
+    );
+  } catch (err) {
+    console.error(err);
+    res.json(error(err));
+  }
+});
+
+// $route  POST api/user/import
+// @access admin
+router.post("/import", async (req, res) => {
+  // TODO
+});
+
+// $route  POST api/user/import
+// @access admin
+router.post("/import", async (req, res) => {
+  // TODO
 });
 
 export default router;

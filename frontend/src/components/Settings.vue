@@ -219,22 +219,15 @@ export default {
               },
             };
           }
-          post(
-            "/api/user/update",
-            reqBody,
-            (result) => {
-              this.$message.success(result);
-              if (this.settingOption === "Information") {
-                this.$router.push(`/user/${this.userName}`);
-              } else {
-                this.$cookies.remove("token");
-                this.$router.push("/signin");
-              }
-            },
-            (error) => {
-              this.$message.error(error);
+          post("/api/user/update", reqBody, (result) => {
+            this.$message.success(result);
+            if (this.settingOption === "Information") {
+              this.$router.push(`/user/${this.userName}`);
+            } else {
+              this.$cookies.remove("token");
+              this.$router.push("/signin");
             }
-          );
+          });
         } else {
           this.$message.error("Unknown error.");
         }

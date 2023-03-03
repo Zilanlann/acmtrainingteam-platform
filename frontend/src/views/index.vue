@@ -84,6 +84,16 @@
             </el-icon>
             <span>Admin</span>
           </el-menu-item>
+          <el-menu-item
+            v-if="$cookies.get('token')?.id === 9999"
+            index="import"
+            route="/import"
+          >
+            <el-icon>
+              <Download />
+            </el-icon>
+            <span>Import</span>
+          </el-menu-item>
         </el-menu>
       </el-aside>
       <el-main style="padding: 0">

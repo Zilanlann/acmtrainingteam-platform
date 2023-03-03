@@ -166,7 +166,26 @@ router.post("/update", async (req, res) => {
 // $route  POST api/user/import
 // @access admin
 router.post("/import", async (req, res) => {
-  console.log(req.file);
+  if (!adminAuth(req.body.auth?.password)) {
+    res.json(error(`Authorization error.`));
+    return;
+  }
+  console.log(req.body.data);
+  const successfulRow = [];
+  const failedRow = [];
+  for (const row of req.body.data) {
+    try {
+      await query(`INSERT INTO user SET ?`, row);
+      successfulRow.push(row.name);
+    } catch (err) {
+      failedRow.push(row.name);
+    }
+  }
+  res.json(
+    result(`Successful/Failed: ${successfulRow.length}/${failedRow.length}
+						Successful: ${successfulRow}
+						Failed: ${failedRow}`)
+  );
 });
 
 // $route  POST api/user/getall
@@ -187,7 +206,7 @@ router.post("/getall", async (req, res) => {
 // @access public
 router.post("/delete", async (req, res) => {
   try {
-    if (!adminAuth(req.body.auth.password)) {
+    if (!adminAuth(req.body.auth?.password)) {
       res.json(error(`Authorization error.`));
       return;
     }

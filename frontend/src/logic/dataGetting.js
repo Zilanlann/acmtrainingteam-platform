@@ -7,7 +7,7 @@ async function post(
   successCallback,
   errorCallback = (error) => {
     console.error(error);
-    ElMessage.error(error);
+    ElMessage.error(error.toString());
   }
 ) {
   try {

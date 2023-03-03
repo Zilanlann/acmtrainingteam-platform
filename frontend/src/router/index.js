@@ -11,6 +11,7 @@ import Submissions from "@/components/Submissions.vue";
 import Register from "@/components/Register.vue";
 import List from "@/components/List.vue";
 import Admin from "@/components/Admin.vue";
+import Import from "@/components/Import.vue";
 
 const routes = [
   {
@@ -37,6 +38,7 @@ const routes = [
       { path: "/submissions/problem/:problemId", component: Submissions },
       { path: "/register", component: Register },
       { path: "/admin", component: Admin },
+      { path: "/import", component: Import },
     ],
   },
 ];

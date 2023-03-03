@@ -169,4 +169,39 @@ router.post("/import", async (req, res) => {
   console.log(req.file);
 });
 
+// $route  POST api/user/getall
+// @access public
+router.post("/getall", async (req, res) => {
+  try {
+    const selectResult =
+      await query(`SELECT id, name, codeforces_handle, codeforces_avatar,
+			leetcode_handle, leetcode_avatar FROM user`);
+    res.json(result(selectResult));
+  } catch (err) {
+    console.error(err);
+    res.json(error(err));
+  }
+});
+
+// $route  POST api/user/delete
+// @access public
+router.post("/delete", async (req, res) => {
+  try {
+    if (!adminAuth(req.body.auth.password)) {
+      res.json(error(`Authorization error.`));
+      return;
+    }
+    const userId = req.body.userId;
+    await query(`DELETE FROM user WHERE id = ${userId};`);
+    await query(`DELETE FROM user_daily_status WHERE user_id = ${userId};`);
+    await query(`DELETE FROM submission WHERE user_id = ${userId};`);
+    await query(`DELETE FROM user_list WHERE user_id = ${userId};`);
+    await query(`DELETE FROM list_user WHERE user_id = ${userId};`);
+    res.json(result(`Delete successfully!`));
+  } catch (err) {
+    console.error(err);
+    res.json(error(err));
+  }
+});
+
 export default router;

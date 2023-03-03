@@ -74,6 +74,16 @@
             </el-icon>
             <span>Settings</span>
           </el-menu-item>
+          <el-menu-item
+            v-if="$cookies.get('token')?.id === 9999"
+            index="admin"
+            route="/admin"
+          >
+            <el-icon>
+              <SetUp />
+            </el-icon>
+            <span>Admin</span>
+          </el-menu-item>
         </el-menu>
       </el-aside>
       <el-main style="padding: 0">

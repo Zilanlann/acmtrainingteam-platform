@@ -10,6 +10,7 @@ import User from "@/components/User.vue";
 import Submissions from "@/components/Submissions.vue";
 import Register from "@/components/Register.vue";
 import List from "@/components/List.vue";
+import Admin from "@/components/Admin.vue";
 
 const routes = [
   {
@@ -29,11 +30,13 @@ const routes = [
       { path: "/problems/tag", component: Problems },
       { path: "/problems/tag/:tag", component: Problems },
       { path: "/settings", component: Settings },
+      { path: "/settings/:userName", component: Settings },
       { path: "/user", component: User },
       { path: "/user/:userName", component: User },
       { path: "/submissions/user/:userName", component: Submissions },
       { path: "/submissions/problem/:problemId", component: Submissions },
       { path: "/register", component: Register },
+      { path: "/admin", component: Admin },
     ],
   },
 ];

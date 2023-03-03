@@ -72,17 +72,17 @@ router.post("/info", async (req, res) => {
     const id = user.id;
 
     const following = await query(
-      `SELECT nickname, name, email, codeforces_handle, leetcode_handle,
-			user_id, follow_id, codeforces_avatar, leetcode_avatar 
-		  FROM user u, user_following f
-			WHERE user_id = ${id} AND follow_id = u.id`
+      `SELECT DISTINCT name, email, codeforces_handle, leetcode_handle,
+			u.id, codeforces_avatar, leetcode_avatar
+		  FROM user u, user_list ul, list_user lu
+			WHERE ul.user_id = ${id} AND ul.id = lu.list_id AND lu.user_id = u.id`
     );
 
     const followers = await query(
-      `SELECT nickname, name, email, codeforces_handle, leetcode_handle,
-			user_id, follow_id, codeforces_avatar, leetcode_avatar 
-		  FROM user u, user_following f
-			WHERE follow_id = ${id} AND user_id = u.id`
+      `SELECT DISTINCT name, email, codeforces_handle, leetcode_handle,
+			u.id, codeforces_avatar, leetcode_avatar
+		  FROM user u, user_list ul, list_user lu
+			WHERE ul.user_id = u.id AND ul.id = lu.list_id AND lu.user_id = ${id}`
     );
 
     const submissionStatus = (
@@ -166,13 +166,7 @@ router.post("/update", async (req, res) => {
 // $route  POST api/user/import
 // @access admin
 router.post("/import", async (req, res) => {
-  // TODO
-});
-
-// $route  POST api/user/import
-// @access admin
-router.post("/import", async (req, res) => {
-  // TODO
+  console.log(req.file);
 });
 
 export default router;

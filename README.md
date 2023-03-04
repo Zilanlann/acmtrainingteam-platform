@@ -56,7 +56,7 @@ docker compose up -d
 
 在`docker-compose`目录内，这一命令会下载对应的镜像并根据`docker-compose.yml`的配置执行构建，详情请查看该文件，下面简要介绍docker构建原理：
 
-- 数据库基于[mysql:8.0.31镜像](https://hub.docker.com/_/mysql)，第一次启动时会运行[schema.sql](./docker-compose/schema.sql)中的代码。会将数据持久化储存在项目目录下的`/docker-compose/mysql`文件夹内（项目部署成功后可看到该文件夹被创建），并暴露3306端口（此端口只可被docker-compose内部网络访问）供后端连接。
+- 数据库基于[mysql:8.0.31镜像](https://hub.docker.com/_/mysql)，第一次启动时会运行[schema.sql](./docker-compose/schema.sql)中的代码。会将数据持久化储存在项目目录下的`/docker-compose/mysql`文件夹内（项目部署成功后可看到该文件夹被创建），并暴露3306端口（方便调试，上线可关闭）。
 - 后端和定期刷新容器基于[node:16.19.0镜像](https://hub.docker.com/_/node)，并基于`backend/dist`文件夹中的[backend.js](backend/dist/backend.js)和[refresh.js](backend/dist/refresh.js)，并开启5000端口供前端请求。
 - 前端基于[nginx:1.23.3](https://hub.docker.com/_/nginx)镜像，并基于`frontend/dist`文件夹进行前端部署，部署于80端口，配置文件为[nginx_container.conf](./docker-compose/nginx_container.conf)。
 

@@ -1,14 +1,20 @@
 <template>
   <el-card
-    style="height: 250px; width: 300px; margin: 10% auto; padding: 0 30px"
+    style="height: 300px; width: 300px; margin: 5% auto; padding: 0 30px"
   >
     <el-row justify="center" style="margin: 14px"> Sign In </el-row>
+    <el-row justify="center" style="margin: 20px">
+      <el-radio-group v-model="form.type">
+        <el-radio-button label="Username" />
+        <el-radio-button label="Email" />
+      </el-radio-group>
+    </el-row>
     <el-form :model="form" :rules="rules">
       <el-form-item prop="usernameOrEmail">
         <el-input
           @keyup.enter="onSubmit"
           v-model="form.usernameOrEmail"
-          placeholder="Username or email"
+          :placeholder="form.type"
           clearable
         />
       </el-form-item>
@@ -45,6 +51,7 @@ export default {
       form: {
         usernameOrEmail: "",
         password: "",
+        type: "Username",
       },
       rules: {
         usernameOrEmail: [
@@ -70,10 +77,8 @@ export default {
         this.$message.error("Please enter complete sign-in information.");
         return;
       }
-      const isEmailReg =
-        /^[a-zA-Z0-9]+([-_.][A-Za-zd]+)*@([a-zA-Z0-9]+[-.])+[A-Za-zd]{2,5}$/;
       const reqBody = {
-        type: isEmailReg.test(this.form.usernameOrEmail) ? "email" : "name",
+        type: this.form.type === "Email" ? "email" : "name",
         usernameOrEmail: this.form.usernameOrEmail,
         password: this.form.password,
       };

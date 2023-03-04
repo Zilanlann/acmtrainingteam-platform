@@ -256,5 +256,5 @@ END;
 //
 delimiter ;
 
-INSERT INTO acm_training_platform.user (id, name, password) VALUES (9999, admin, admin);
+INSERT INTO acm_training_platform.user (id, name, password) VALUES (9999, 'admin', 'admin');
 INSERT INTO acm_training_platform.user (id, create_time, update_time, name, password, email, qq, about, codeforces_handle, codeforces_avatar, leetcode_handle, leetcode_avatar) VALUES (1, '2022-11-16 16:30:25', '2023-01-06 23:24:55', 'wushenghao', '123456', 'wushenghaop@qq.com', '940919742', 'I have nothing to say.', 'wushenghao', '2862870/avatar/6d8b4acb4f6a39be.jpg', 'shenghaowu', 'users/vvizardly-coldenqgd/avatar_1626771090.png');

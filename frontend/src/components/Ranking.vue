@@ -13,28 +13,9 @@
         align="center"
         prop="name"
         sortable="custom"
-        :filters="[
-          { text: 'Following', value: 'Following' },
-          { text: 'Unfollowing', value: 'Unfollowing' },
-        ]"
+        :filters="lists"
       >
         <template #default="scope">
-          <el-button
-            link
-            v-if="!following.includes(scope.row.user_id)"
-            style="float: left; margin-right: -8px; margin-top: 2px"
-            @click="follow(scope.row.user_id)"
-          >
-            <el-icon :size="18"><Star /> </el-icon>
-          </el-button>
-          <el-button
-            v-else
-            link
-            style="float: left; margin-left: -2px; margin-right: -10px"
-            @click="unfollow(scope.row.user_id)"
-          >
-            <el-icon color="#ffab00" :size="22"><StarFilled /> </el-icon>
-          </el-button>
           <el-link
             @click="this.$router.push(`/user/${scope.row.user_name}`)"
             :underline="false"
@@ -199,58 +180,18 @@ export default {
       page: 1,
       size: 15,
       tableData: [],
-      following: [],
       filter: [],
       order: {
         prop: "active_score",
         order: "descending",
       },
+      lists: [],
     };
   },
   methods: {
     getLeetcodeAvatar,
     getCodeforcesAvatar,
     getRatingColor,
-    unfollow(followId) {
-      if (!this.$cookies.get("token")?.id) {
-        this.$message.error("Please sign in first!");
-        return;
-      }
-      post(
-        "/api/following/delete",
-        {
-          user_id: this.$cookies.get("token")?.id,
-          follow_id: followId,
-        },
-        (result) => {
-          this.$message.success({
-            message: result,
-            duration: 1000,
-          });
-          this.getFollowingList();
-        }
-      );
-    },
-    follow(followId) {
-      if (!this.$cookies.get("token")?.id) {
-        this.$message.error("Please sign in first!");
-        return;
-      }
-      post(
-        "/api/following/add",
-        {
-          user_id: this.$cookies.get("token")?.id,
-          follow_id: followId,
-        },
-        (result) => {
-          this.$message.success({
-            message: result,
-            duration: 1000,
-          });
-          this.getFollowingList();
-        }
-      );
-    },
     handleSizeChange(size) {
       this.size = size;
       this.getRanking();
@@ -273,7 +214,6 @@ export default {
           size: this.size,
           page: this.page,
           filter: this.filter,
-          user_id: this.$cookies.get("token")?.id,
           order: this.order,
         },
         (result) => {
@@ -281,20 +221,18 @@ export default {
         }
       );
     },
-    getFollowingList() {
-      if (this.$cookies.get("token")?.id) {
-        post(
-          "/api/following/list",
-          {
-            user_id: this.$cookies.get("token")?.id,
-          },
-          (result) => {
-            this.following = result.map((item) => {
-              return item.follow_id;
-            });
-          }
-        );
-      }
+    getList() {
+      post(
+        "/api/list/getlist",
+        {
+          user_id: this.$cookies.get("token")?.id,
+        },
+        (result) => {
+          this.lists = result.map((item) => {
+            return { text: item.list_name, value: item.id };
+          });
+        }
+      );
     },
   },
   watch: {
@@ -304,7 +242,9 @@ export default {
   },
   async created() {
     this.getRanking();
-    this.getFollowingList();
+    if (this.$cookies.get("token")?.id) {
+      this.getList();
+    }
   },
 };
 </script>

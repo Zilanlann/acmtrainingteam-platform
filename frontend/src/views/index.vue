@@ -43,11 +43,11 @@
             </el-icon>
             <span>Ranking</span>
           </el-menu-item>
-          <el-menu-item index="following" route="/following">
+          <el-menu-item index="list" route="/list">
             <el-icon>
               <View />
             </el-icon>
-            <span>Following</span>
+            <span>Follow List</span>
           </el-menu-item>
           <el-menu-item index="problems" route="/problems">
             <el-icon>
@@ -73,6 +73,26 @@
               <Setting />
             </el-icon>
             <span>Settings</span>
+          </el-menu-item>
+          <el-menu-item
+            v-if="$cookies.get('token')?.id === 9999"
+            index="admin"
+            route="/admin"
+          >
+            <el-icon>
+              <SetUp />
+            </el-icon>
+            <span>Admin</span>
+          </el-menu-item>
+          <el-menu-item
+            v-if="$cookies.get('token')?.id === 9999"
+            index="import"
+            route="/import"
+          >
+            <el-icon>
+              <Download />
+            </el-icon>
+            <span>Import</span>
           </el-menu-item>
         </el-menu>
       </el-aside>

@@ -4,6 +4,13 @@ import { result, error } from "./tools/apiDataFormat.js";
 
 const router = express.Router();
 
+async function adminAuth(password) {
+  const selectPassword = await query(
+    `SELECT password FROM user WHERE id = 9999`
+  );
+  return password && password === selectPassword[0]?.password;
+}
+
 // $route  POST api/user/register
 // @access public
 router.post("/register", async (req, res) => {
@@ -65,17 +72,17 @@ router.post("/info", async (req, res) => {
     const id = user.id;
 
     const following = await query(
-      `SELECT nickname, name, email, codeforces_handle, leetcode_handle,
-			user_id, follow_id, codeforces_avatar, leetcode_avatar 
-		  FROM user u, user_following f
-			WHERE user_id = ${id} AND follow_id = u.id`
+      `SELECT DISTINCT name, email, codeforces_handle, leetcode_handle,
+			u.id, codeforces_avatar, leetcode_avatar
+		  FROM user u, user_list ul, list_user lu
+			WHERE ul.user_id = ${id} AND ul.id = lu.list_id AND lu.user_id = u.id`
     );
 
     const followers = await query(
-      `SELECT nickname, name, email, codeforces_handle, leetcode_handle,
-			user_id, follow_id, codeforces_avatar, leetcode_avatar 
-		  FROM user u, user_following f
-			WHERE follow_id = ${id} AND user_id = u.id`
+      `SELECT DISTINCT name, email, codeforces_handle, leetcode_handle,
+			u.id, codeforces_avatar, leetcode_avatar
+		  FROM user u, user_list ul, list_user lu
+			WHERE ul.user_id = u.id AND ul.id = lu.list_id AND lu.user_id = ${id}`
     );
 
     const submissionStatus = (
@@ -118,6 +125,98 @@ router.post("/info", async (req, res) => {
         allUserSubmissionStatus,
       })
     );
+  } catch (err) {
+    console.error(err);
+    res.json(error(err));
+  }
+});
+
+// $route  POST api/user/update
+// @access private or admin
+router.post("/update", async (req, res) => {
+  try {
+    if (!(req.body.auth && req.body.info)) {
+      res.json(error(`Data is not in the correct format.`));
+      return;
+    }
+    const selectResult = await query(
+      `SELECT id, password FROM user WHERE id = ${req.body.auth.id}`
+    );
+    if (
+      selectResult.length === 0 ||
+      selectResult[0].password !== req.body.auth.password ||
+      (req.body.auth.id !== 9999 && req.body.auth.name !== req.body.info.name)
+    ) {
+      res.json(error("Wrong authorization."));
+      return;
+    }
+    await query(
+      `UPDATE user SET ? WHERE name = '${req.body.info.name}'`,
+      req.body.info
+    );
+    res.json(
+      result(`Information of ${req.body.info.name} has updated successfully.`)
+    );
+  } catch (err) {
+    console.error(err);
+    res.json(error(err));
+  }
+});
+
+// $route  POST api/user/import
+// @access admin
+router.post("/import", async (req, res) => {
+  if (!adminAuth(req.body.auth?.password)) {
+    res.json(error(`Authorization error.`));
+    return;
+  }
+  console.log(req.body.data);
+  const successfulRow = [];
+  const failedRow = [];
+  for (const row of req.body.data) {
+    try {
+      await query(`INSERT INTO user SET ?`, row);
+      successfulRow.push(row.name);
+    } catch (err) {
+      failedRow.push(row.name);
+    }
+  }
+  res.json(
+    result(`Successful/Failed: ${successfulRow.length}/${failedRow.length}
+						Successful: ${successfulRow}
+						Failed: ${failedRow}`)
+  );
+});
+
+// $route  POST api/user/getall
+// @access public
+router.post("/getall", async (req, res) => {
+  try {
+    const selectResult =
+      await query(`SELECT id, name, codeforces_handle, codeforces_avatar,
+			leetcode_handle, leetcode_avatar FROM user`);
+    res.json(result(selectResult));
+  } catch (err) {
+    console.error(err);
+    res.json(error(err));
+  }
+});
+
+// $route  POST api/user/delete
+// @access public
+router.post("/delete", async (req, res) => {
+  try {
+    if (!adminAuth(req.body.auth?.password)) {
+      res.json(error(`Authorization error.`));
+      return;
+    }
+    const userId = req.body.userId;
+    await query(`DELETE FROM user WHERE id = ${userId};`);
+    await query(`DELETE FROM user_daily_status WHERE user_id = ${userId};`);
+    await query(`DELETE FROM submission WHERE user_id = ${userId};`);
+    await query(`DELETE FROM user_list WHERE user_id = ${userId};`);
+    await query(`DELETE FROM list_user WHERE user_id = ${userId};`);
+    res.json(result(`Delete successfully!`));
   } catch (err) {
     console.error(err);
     res.json(error(err));

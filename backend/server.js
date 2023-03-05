@@ -8,6 +8,7 @@ import {
   problems,
   tags,
   ranking,
+  log,
 } from "./api/index.js";
 import cors from "cors";
 
@@ -21,6 +22,7 @@ app.use("/api/submissions", submissions);
 app.use("/api/problems", problems);
 app.use("/api/tags", tags);
 app.use("/api/ranking", ranking);
+app.use("/api/log", log);
 
 const port = config.get("serverPort") || 5000;
 

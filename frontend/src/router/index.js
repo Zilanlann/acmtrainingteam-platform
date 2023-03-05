@@ -12,6 +12,7 @@ import Register from "@/components/Register.vue";
 import List from "@/components/List.vue";
 import Admin from "@/components/Admin.vue";
 import Import from "@/components/Import.vue";
+import Error from "@/components/Error.vue";
 
 const routes = [
   {
@@ -39,6 +40,7 @@ const routes = [
       { path: "/register", component: Register },
       { path: "/admin", component: Admin },
       { path: "/import", component: Import },
+      { path: "/error", component: Error },
     ],
   },
 ];

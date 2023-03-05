@@ -8,6 +8,14 @@ import {
 } from "./dataGetting/index.js";
 import { scheduleJob } from "node-schedule";
 
+async function logError(errorObject) {
+  try {
+    await connection.query(`INSERT INTO error_log SET ?`, errorObject);
+  } catch (err) {
+    console.error(err);
+  }
+}
+
 // Codeforces refreshing
 async function refreshCodeforces() {
   const codeforcesRow = await connection.query(
@@ -17,7 +25,7 @@ async function refreshCodeforces() {
     setTimeout(async () => {
       const user = new CodeforcesUser(row.codeforces_handle);
       try {
-				const submissionList = await user.getSubmissionList();
+        const submissionList = await user.getSubmissionList();
         if (!submissionList.length) {
           return;
         }
@@ -49,6 +57,12 @@ async function refreshCodeforces() {
       } catch (err) {
         console.error(`ERROR of Codeforces: ${row.codeforces_handle}`);
         console.error(err);
+        logError({
+          action: `Refresh Codeforces Submissions`,
+          platform: `Codeforces`,
+          handle: row.codeforces_handle,
+          error: err,
+        });
       }
     }, index * 2000);
   });
@@ -93,6 +107,12 @@ async function refreshLeetcode() {
     } catch (err) {
       console.error(`ERROR of LeetCode: ${row.leetcode_handle}`);
       console.error(err);
+      logError({
+        action: `Refresh LeetCode Submissions`,
+        platform: `LeetCode`,
+        handle: row.leetcode_handle,
+        error: err,
+      });
     }
   });
 }
@@ -103,6 +123,10 @@ async function refreshUserDailyStatus() {
     console.log("Refresh user_daily_status successfully.");
   } catch (err) {
     console.error(err);
+    logError({
+      action: `Refresh user daily status`,
+      error: err,
+    });
   }
 }
 
@@ -123,6 +147,12 @@ async function refreshLeetcodeAvatar() {
     } catch (err) {
       console.error(`ERROR of LeetCode: ${row.leetcode_handle}`);
       console.error(err);
+      logError({
+        action: `Get LeetCode Avatar`,
+        platform: `LeetCode`,
+        handle: row.leetcode_handle,
+        error: err,
+      });
     }
   });
 }
@@ -143,6 +173,12 @@ async function refreshCodeforcesAvatar() {
         } catch (err) {
           console.error(`ERROR of Codeforces Avatar: ${row.codeforces_handle}`);
           console.error(err);
+          logError({
+            action: `Get Codeforces Avatar`,
+            platform: `Codeforces`,
+            handle: row.codeforces_handle,
+            error: err,
+          });
         }
       }, index * 2000);
     });
@@ -157,12 +193,15 @@ scheduleJob("0 * * * *", () => {
 });
 
 scheduleJob("30 * * * *", () => {
-  refreshLeetcodeAvatar();
-  refreshCodeforcesAvatar();
   refreshUserDailyStatus();
 });
 
-refreshCodeforces();
+scheduleJob("20 19 * * *", () => {
+  refreshLeetcodeAvatar();
+  refreshCodeforcesAvatar();
+});
+
+// refreshCodeforces();
 // refreshLeetcode();
 // refreshLeetcodeAvatar();
 // refreshCodeforcesAvatar();

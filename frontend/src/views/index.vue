@@ -56,6 +56,7 @@
             <span>Problems</span>
           </el-menu-item>
           <el-menu-item
+            v-if="$cookies.get('token')?.id !== 9999"
             index="user"
             :route="userId ? `/user/${userName}` : '/user'"
           >
@@ -93,6 +94,16 @@
               <Download />
             </el-icon>
             <span>Import</span>
+          </el-menu-item>
+          <el-menu-item
+            v-if="$cookies.get('token')?.id === 9999"
+            index="error"
+            route="/error"
+          >
+            <el-icon>
+              <Warning />
+            </el-icon>
+            <span>Error</span>
           </el-menu-item>
         </el-menu>
       </el-aside>

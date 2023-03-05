@@ -225,7 +225,12 @@ BEGIN
         AVG(IF(status = 'Accepted' AND submit_time > weekBeginTimestamp, rating, NULL))
             week_average_ac_rating,
         SUM(IF(status = 'Accepted' AND submit_time > monthBeginTimestamp,
-			rating * (submit_time - monthBeginTimestamp) / (200 * 86400), 0))
+            IF(rating is NULL,
+                1400 * (submit_time - monthBeginTimestamp) / (200 * 86400),
+                rating * (submit_time - monthBeginTimestamp) / (200 * 86400)
+                ),
+            0)
+            )
             active_score,
         COUNT(status = 'Accepted' AND rating >= 800 AND rating < 1200 OR NULL)
             easy_ac_submission_number,

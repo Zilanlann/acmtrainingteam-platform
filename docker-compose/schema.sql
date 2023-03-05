@@ -180,7 +180,21 @@ create table list_user
 alter table list_user
     add primary key (id);
 
+-- error_log
+create table error_log
+(
+    id          int auto_increment,
+    create_time timestamp default CURRENT_TIMESTAMP not null,
+    error       text                                not null,
+    platform    enum ('LeetCode', 'Codeforces')     null,
+    handle      varchar(30)                         null,
+    action      varchar(30)                         null,
+    constraint error_log_id_uindex
+        unique (id)
+);
 
+alter table error_log
+    add primary key (id);
 
 -- refresh_user_daily_status
 -- change the delimiter from `;` to `//` so the multi-line sql including `;` can be executed.
@@ -257,4 +271,4 @@ END;
 delimiter ;
 
 INSERT INTO acm_training_platform.user (id, name, password) VALUES (9999, 'admin', 'admin');
-INSERT INTO acm_training_platform.user (id, create_time, update_time, name, password, email, qq, about, codeforces_handle, codeforces_avatar, leetcode_handle, leetcode_avatar) VALUES (1, '2022-11-16 16:30:25', '2023-01-06 23:24:55', 'wushenghao', '123456', 'wushenghaop@qq.com', '940919742', 'I have nothing to say.', 'wushenghao', '2862870/avatar/6d8b4acb4f6a39be.jpg', 'shenghaowu', 'users/vvizardly-coldenqgd/avatar_1626771090.png');
+INSERT INTO acm_training_platform.user (id, create_time, update_time, name, password, email, qq, about, codeforces_handle, codeforces_avatar, leetcode_handle) VALUES (1, '2022-11-16 16:30:25', '2023-01-06 23:24:55', 'wushenghao', '123456', 'wushenghaop@qq.com', '940919742', 'I have nothing to say.', 'wushenghao', '2862870/avatar/6d8b4acb4f6a39be.jpg', 'shenghaowu');

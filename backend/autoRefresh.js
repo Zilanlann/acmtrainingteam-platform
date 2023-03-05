@@ -17,7 +17,10 @@ async function refreshCodeforces() {
     setTimeout(async () => {
       const user = new CodeforcesUser(row.codeforces_handle);
       try {
-        const submissionList = await user.getSubmissionList();
+				const submissionList = await user.getSubmissionList();
+        if (!submissionList.length) {
+          return;
+        }
 
         const { codeforcesSubmission, codeforcesProblem, problemTag } =
           CodeforcesTransformer.transformSubmissions(submissionList, row.id);
@@ -26,20 +29,21 @@ async function refreshCodeforces() {
 				(submission_id, user_id, submit_time, codeforces_problem_id, status, rating)
 				VALUES ${connection.escape(codeforcesSubmission)} ON DUPLICATE KEY UPDATE
 				rating = VALUES(rating), status = VALUES(status);`;
-        connection.query(submissionQuery);
+
+        await connection.query(submissionQuery);
 
         const problemQuery = `INSERT INTO problem
 				(codeforces_problem_id, title, rating, tags)
 				VALUES ${connection.escape(codeforcesProblem)}
 				ON DUPLICATE KEY UPDATE rating = VALUES(rating),
 				tags = VALUES(tags);`;
-        connection.query(problemQuery);
+        await connection.query(problemQuery);
 
         const tagQuery =
           `INSERT IGNORE INTO problem_tag
 	 			(codeforces_problem_id, tag)
 	 			VALUES ` + connection.escape(problemTag);
-        connection.query(tagQuery);
+        await connection.query(tagQuery);
 
         console.log(`Codeforces: ${row.codeforces_handle}`);
       } catch (err) {
@@ -60,6 +64,9 @@ async function refreshLeetcode() {
     const user = new LeetCodeUser(row.leetcode_handle);
     try {
       const submissionList = await user.getRecentSubmissionList();
+      if (!submissionList.length) {
+        return;
+      }
 
       const { leetCodeSubmission, leetCodeProblem, problemTag } =
         LeetCodeTransformer.transformSubmissions(submissionList, row.id);
@@ -68,19 +75,19 @@ async function refreshLeetcode() {
 		(submission_id, user_id, submit_time, leetcode_problem_id, status, rating)
 		VALUES  ${connection.escape(leetCodeSubmission)} ON DUPLICATE KEY UPDATE
 		rating = VALUES(rating), status = VALUES(status)`;
-      connection.query(submissionQuery);
+      await connection.query(submissionQuery);
 
       const problemQuery =
         `INSERT IGNORE INTO problem
 		(leetcode_problem_id, title, title_slug, rating, tags)
 		VALUES ` + connection.escape(leetCodeProblem);
-      connection.query(problemQuery);
+      await connection.query(problemQuery);
 
       const tagQuery =
         `INSERT IGNORE INTO problem_tag
 	 	(leetcode_problem_id, tag)
 	 	VALUES ` + connection.escape(problemTag);
-      connection.query(tagQuery);
+      await connection.query(tagQuery);
 
       console.log(`LeetCode: ${row.leetcode_handle}`);
     } catch (err) {
@@ -108,7 +115,7 @@ async function refreshLeetcodeAvatar() {
       const leetcodeAvatar = await Avatar.getLeetcodeUserAvatar(
         row.leetcode_handle
       );
-      connection.query(
+      await connection.query(
         `UPDATE user SET leetcode_avatar = '${leetcodeAvatar}'
 			WHERE leetcode_handle = '${row.leetcode_handle}'`
       );
@@ -149,13 +156,13 @@ scheduleJob("0 * * * *", () => {
   refreshLeetcode();
 });
 
-scheduleJob("30 0 * * *", () => {
+scheduleJob("30 * * * *", () => {
   refreshLeetcodeAvatar();
   refreshCodeforcesAvatar();
   refreshUserDailyStatus();
 });
 
-// refreshCodeforces();
+refreshCodeforces();
 // refreshLeetcode();
 // refreshLeetcodeAvatar();
 // refreshCodeforcesAvatar();

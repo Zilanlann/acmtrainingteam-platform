@@ -167,8 +167,8 @@ async function refreshCodeforcesAvatar() {
         try {
           const handle = row.codeforces_handle;
           const avatar = await Avatar.getCodeforcesUserAvatar(handle);
-          await connection.query(`UPDATE user SET codeforces_avatar = '${handle}'
-        	WHERE codeforces_handle = '${avatar}'`);
+          await connection.query(`UPDATE user SET codeforces_avatar = '${avatar}'
+        	WHERE codeforces_handle = '${handle}'`);
           console.log(`Avatar: ${handle} ${avatar}`);
         } catch (err) {
           console.error(`ERROR of Codeforces Avatar: ${row.codeforces_handle}`);
@@ -187,16 +187,16 @@ async function refreshCodeforcesAvatar() {
   }
 }
 
-scheduleJob("0 * * * *", () => {
+scheduleJob("35 * * * *", () => {
   refreshCodeforces();
   refreshLeetcode();
 });
 
-scheduleJob("30 * * * *", () => {
+scheduleJob("45 * * * *", () => {
   refreshUserDailyStatus();
 });
 
-scheduleJob("20 19 * * *", () => {
+scheduleJob("40 12 * * *", () => {
   refreshLeetcodeAvatar();
   refreshCodeforcesAvatar();
 });

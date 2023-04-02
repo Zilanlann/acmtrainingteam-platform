@@ -3,6 +3,7 @@ import Index from "@/views/Index.vue";
 import SignIn from "@/components/SignIn.vue";
 import Ranking from "@/components/Ranking.vue";
 import Discussion from "@/components/Discussion.vue";
+import Post from "@/components/Post.vue";
 import ListDetails from "@/components/ListDetails.vue";
 import Problems from "@/components/Problems.vue";
 import Settings from "@/components/Settings.vue";
@@ -26,6 +27,7 @@ const routes = [
       { path: "/signin", component: SignIn },
       { path: "/ranking", component: Ranking },
       { path: "/discussion", component: Discussion },
+      { path: "/discussion/:postId", component: Post },
       { path: "/list", component: List },
       { path: "/list/:listId/:listName", component: ListDetails },
       { path: "/problems", component: Problems },

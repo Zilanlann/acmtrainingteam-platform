@@ -159,6 +159,13 @@
         </template>
       </el-table-column>
       <el-table-column
+        prop="floor_number"
+        sortable="custom"
+        label="Floors"
+        align="center"
+      >
+      </el-table-column>
+      <el-table-column
         prop="user_name"
         sortable="custom"
         label="Last Post"
@@ -182,6 +189,7 @@
           </el-link>
         </template>
       </el-table-column>
+
       <el-table-column
         prop="time"
         sortable="custom"

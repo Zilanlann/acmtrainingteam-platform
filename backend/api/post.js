@@ -23,7 +23,7 @@ router.post("/add", async (req, res) => {
       res.json(error("Wrong authorization."));
       return;
     }
-    const floor = await query(`SELECT floor_number FROM post
+    const floor = await query(`SELECT floor_number, last_floor FROM post
 		WHERE problem_id = ${req.body.problem_id}`);
     const lastFloor = floor.length === 0 ? 1 : floor[0].last_floor + 1;
     if (lastFloor === 1) {
@@ -32,7 +32,7 @@ router.post("/add", async (req, res) => {
     } else {
       await query(
         `UPDATE post SET floor_number = floor_number + 1,
-				last_floor = last_floor + 1, last_user_id = req.body.auth.id
+				last_floor = last_floor + 1, last_user_id = ${req.body.auth.id}
 				WHERE problem_id = ${req.body.problem_id}`
       );
     }
@@ -142,7 +142,10 @@ router.post("/get", async (req, res) => {
       return;
     }
     const posts = await query(
-      `SELECT * FROM post WHERE problem_id = ${req.body.problem_id}`
+      `SELECT floor_id, p.update_time time, user_id,
+			content, name user_name, codeforces_avatar, leetcode_avatar
+			FROM post_floor p, user u 
+			WHERE problem_id = ${req.body.problem_id} AND user_id = u.id`
     );
     res.json(
       result({

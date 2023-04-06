@@ -179,9 +179,9 @@
             <el-avatar
               :size="28"
               :src="
-                scope.row.title_slug
-                  ? getLeetcodeAvatar(scope.row)
-                  : getCodeforcesAvatar(scope.row)
+                scope.row.codeforces_avatar
+                  ? getCodeforcesAvatar(scope.row)
+                  : getLeetcodeAvatar(scope.row)
               "
               style="margin-right: 6px"
             />

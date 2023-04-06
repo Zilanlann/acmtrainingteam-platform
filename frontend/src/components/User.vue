@@ -84,7 +84,7 @@
               </template>
               <el-link
                 type="primary"
-                :href="`https://codeforces.com/profile/${information.user.leetcode_handle}`"
+                :href="`https://leetcode.cn/u/${information.user.leetcode_handle}`"
                 target="_blank"
                 :underline="false"
               >

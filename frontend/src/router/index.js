@@ -27,7 +27,7 @@ const routes = [
       { path: "/signin", component: SignIn },
       { path: "/ranking", component: Ranking },
       { path: "/discussion", component: Discussion },
-      { path: "/discussion/:postId", component: Post },
+      { path: "/discussion/:problemId", component: Post },
       { path: "/list", component: List },
       { path: "/list/:listId/:listName", component: ListDetails },
       { path: "/problems", component: Problems },

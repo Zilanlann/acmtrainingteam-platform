@@ -196,6 +196,43 @@ create table error_log
 alter table error_log
     add primary key (id);
 
+-- post
+create table post
+(
+    id           int auto_increment,
+    create_time  timestamp default CURRENT_TIMESTAMP not null,
+    update_time  timestamp default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP,
+    problem_id   int                                 not null,
+    floor_number int       default 1                 not null,
+    last_floor   int       default 1                 not null,
+    last_user_id int                                 not null,
+    constraint user_post_id_uindex
+        unique (id)
+);
+
+alter table post
+    add primary key (id);
+
+-- post_floor
+create table post_floor
+(
+    id          int auto_increment,
+    create_time timestamp default CURRENT_TIMESTAMP not null,
+    update_time timestamp default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP,
+    problem_id  int                                 not null,
+    user_id     int                                 not null,
+    floor_id    int                                 not null,
+    content     text                                null,
+    constraint post_floor_id_uindex
+        unique (id)
+);
+
+create index post_floor_post_id_floor_id_index
+    on post_floor (problem_id, floor_id);
+
+alter table post_floor
+    add primary key (id);
+
 -- refresh_user_daily_status
 -- change the delimiter from `;` to `//` so the multi-line sql including `;` can be executed.
 delimiter //

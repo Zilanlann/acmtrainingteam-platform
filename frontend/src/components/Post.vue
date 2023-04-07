@@ -99,7 +99,11 @@
           <v-md-preview :text="post.content"></v-md-preview>
         </el-card>
       </el-container>
-      <el-container style="width: 90%; margin: 10px auto" direction="vertical">
+      <el-container
+        v-if="$cookies.get('token')?.id"
+        style="width: 90%; margin: 10px auto"
+        direction="vertical"
+      >
         <v-md-editor v-model="postText" height="400px"></v-md-editor>
         <el-button style="margin: 10px 0" text @click="onPost"
           >Click to post</el-button

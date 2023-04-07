@@ -13,7 +13,7 @@
         </el-icon>
       </el-button>
       <span v-if="userId">Hello, {{ userName }}</span>
-      <span v-else>Nanjing University's ACM Platform</span>
+      <span v-else>ACM Training Team Platform</span>
       <el-button
         v-if="userId"
         style="float: right; margin-top: 14px"

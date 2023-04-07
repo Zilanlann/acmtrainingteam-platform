@@ -247,15 +247,17 @@ export default {
     } else {
       this.userName = this.$cookies.get("token")?.name;
     }
-    post(
-      "/api/user/info",
-      {
-        user_name: this.userName,
-      },
-      (result) => {
-        this.informationForm = result.user;
-      }
-    );
+    if (this.userName) {
+      post(
+        "/api/user/info",
+        {
+          user_name: this.userName,
+        },
+        (result) => {
+          this.informationForm = result.user;
+        }
+      );
+    }
   },
 };
 </script>

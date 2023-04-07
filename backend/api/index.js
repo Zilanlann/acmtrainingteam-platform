@@ -5,5 +5,6 @@ import tags from "./tags.js";
 import ranking from "./ranking.js";
 import list from "./list.js";
 import log from "./log.js";
+import post from "./post.js";
 
-export { submissions, user, problems, tags, ranking, list, log };
+export { submissions, user, problems, tags, ranking, list, log, post };

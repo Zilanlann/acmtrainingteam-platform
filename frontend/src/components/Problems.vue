@@ -161,7 +161,7 @@
           </el-link>
         </template>
       </el-table-column>
-      <el-table-column label="Submissions" align="center">
+      <el-table-column label="Details" align="center">
         <template #default="scope">
           <el-button
             @click="
@@ -170,7 +170,16 @@
             type="info"
             plain
             size="small"
-            >Details</el-button
+            >Submissions</el-button
+          >
+          <el-button
+            @click="
+              this.$router.push(`/discussion/${scope.row.problem_id}`)
+            "
+            type="info"
+            plain
+            size="small"
+            >Discussions</el-button
           >
         </template>
       </el-table-column>

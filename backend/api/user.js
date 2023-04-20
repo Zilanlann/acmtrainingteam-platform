@@ -1,6 +1,7 @@
 import express from "express";
 import query from "../dbQuery.js";
 import { result, error } from "./tools/apiDataFormat.js";
+import { refreshAll } from "../refresh.js";
 
 const router = express.Router();
 
@@ -197,6 +198,7 @@ router.post("/import", async (req, res) => {
       failedRow.push(row.name);
     }
   }
+  refreshAll();
   res.json(
     result(`Successful/Failed: ${successfulRow.length}/${failedRow.length}
 						Successful: ${successfulRow}

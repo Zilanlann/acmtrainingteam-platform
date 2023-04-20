@@ -166,8 +166,13 @@ router.post("/update", async (req, res) => {
 // $route  POST api/user/import
 // @access admin
 router.post("/import", async (req, res) => {
-  if (!adminAuth(req.body.auth?.password)) {
+  const authResult = await adminAuth(req.body.auth?.password);
+  if (!authResult) {
     res.json(error(`Authorization error.`));
+    return;
+  }
+  if (!(req.body.data?.length)) {
+    res.json(error(`Data is not in the correct format.`));
     return;
   }
   console.log(req.body.data);
@@ -175,6 +180,17 @@ router.post("/import", async (req, res) => {
   const failedRow = [];
   for (const row of req.body.data) {
     try {
+      if (!row.password) {
+        row.password = "123456";
+      }
+      if (!row.name) {
+        if (row.codeforces_handle) {
+          row.name = row.codeforces_handle;
+        }
+        if (row.leetcode_handle) {
+          row.name = row.leetcode_handle;
+        }
+      }
       await query(`INSERT INTO user SET ?`, row);
       successfulRow.push(row.name);
     } catch (err) {
@@ -206,7 +222,8 @@ router.post("/getall", async (req, res) => {
 // @access public
 router.post("/delete", async (req, res) => {
   try {
-    if (!adminAuth(req.body.auth?.password)) {
+    const authResult = await adminAuth(req.body.auth?.password);
+    if (!authResult) {
       res.json(error(`Authorization error.`));
       return;
     }

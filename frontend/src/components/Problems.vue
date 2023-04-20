@@ -173,9 +173,7 @@
             >Submissions</el-button
           >
           <el-button
-            @click="
-              this.$router.push(`/discussion/${scope.row.problem_id}`)
-            "
+            @click="this.$router.push(`/discussion/${scope.row.problem_id}`)"
             type="info"
             plain
             size="small"

@@ -92,9 +92,37 @@
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="onSubmit">Add</el-button>
+          <el-button type="primary" @click="openDialog">Batch manage</el-button>
         </el-form-item>
       </el-form>
     </el-footer>
+    <el-dialog
+      :title="`List ${$route.params.listName}`"
+      v-model="dialogVisible"
+      fullscreen
+    >
+      <el-checkbox-group v-model="checkList">
+        <span v-for="user of allUsers" :key="user.name">
+          <el-checkbox style="margin: 8px" :label="user.id">
+            <el-avatar
+              :size="24"
+              :src="
+                user.codeforces_avatar
+                  ? getCodeforcesAvatar(user)
+                  : getLeetcodeAvatar(user)
+              "
+              style="margin-right: 6px"
+            />{{ user.name }}</el-checkbox
+          >
+        </span>
+      </el-checkbox-group>
+      <template #footer>
+        <span class="dialog-footer">
+          <el-button @click="dialogVisible = false">Cancel</el-button>
+          <el-button type="primary" @click="confirmDialog"> Confirm </el-button>
+        </span>
+      </template>
+    </el-dialog>
   </el-container>
 </template>
 <script>
@@ -104,11 +132,14 @@ import { getLeetcodeAvatar, getCodeforcesAvatar } from "@/logic/dataShowing";
 export default {
   data() {
     return {
+      dialogVisible: false,
       userToAdd: {
         user_id: "",
       },
       tableData: [],
       userList: [],
+      allUsers: [],
+      checkList: [],
       rules: {
         user_id: [
           {
@@ -131,6 +162,7 @@ export default {
         },
         (result) => {
           this.tableData = result;
+          this.checkList = result.map((item) => item.user_id);
         }
       );
     },
@@ -149,6 +181,9 @@ export default {
           });
         }
       );
+      post("/api/user/getall", null, (result) => {
+        this.allUsers = result;
+      });
     },
     onSubmit() {
       const formEl = this.$refs.formRef;
@@ -192,6 +227,27 @@ export default {
       );
       this.getUserList();
       this.getTableData();
+    },
+    openDialog() {
+      this.dialogVisible = true;
+    },
+    confirmDialog() {
+      post(
+        "/api/list/manage",
+        {
+          list_id: this.$route.params.listId,
+          users: this.checkList,
+        },
+        (result) => {
+          this.$message.success({
+            message: result,
+            duration: 1000,
+          });
+          this.getUserList();
+          this.getTableData();
+          this.dialogVisible = false;
+        }
+      );
     },
   },
   async created() {

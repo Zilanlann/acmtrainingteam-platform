@@ -102,7 +102,7 @@ router.post("/usertoadd", async (req, res) => {
 // $route  POST api/list/adduser
 // @access public
 router.post("/adduser", async (req, res) => {
-  if (!req.body.list_id && !req.body.user_id) {
+  if (!req.body.list_id || !req.body.user_id) {
     res.json(error(`Data is not in the correct format.`));
     return;
   }
@@ -118,7 +118,7 @@ router.post("/adduser", async (req, res) => {
 // $route  POST api/list/deleteuser
 // @access public
 router.post("/deleteuser", async (req, res) => {
-  if (!req.body.list_id && !req.body.user_id) {
+  if (!req.body.list_id || !req.body.user_id) {
     res.json(error(`Data is not in the correct format.`));
     return;
   }
@@ -126,6 +126,26 @@ router.post("/deleteuser", async (req, res) => {
     await query(`DELETE FROM list_user 
 		WHERE list_id = ${req.body.list_id} AND user_id = ${req.body.user_id}`);
     res.json(result(`Delete user successfully.`));
+  } catch (err) {
+    console.error(err);
+    res.json(error(err));
+  }
+});
+
+// $route  POST api/list/manage
+// @access public
+router.post("/manage", async (req, res) => {
+  if (!req.body.list_id || !req.body.users) {
+    res.json(error(`Data is not in the correct format.`));
+    return;
+  }
+  try {
+    await query(`DELETE FROM list_user WHERE list_id = ${req.body.list_id}`);
+    for (const userId of req.body.users) {
+      await query(`INSERT INTO list_user SET 
+      list_id = ${req.body.list_id}, user_id = ${userId}`);
+    }
+    res.json(result(`Change list users successfully.`));
   } catch (err) {
     console.error(err);
     res.json(error(err));

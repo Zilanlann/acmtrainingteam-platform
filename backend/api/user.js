@@ -188,7 +188,7 @@ router.post("/import", async (req, res) => {
         if (row.codeforces_handle) {
           row.name = row.codeforces_handle;
         }
-        if (row.leetcode_handle) {
+        else if (row.leetcode_handle) {
           row.name = row.leetcode_handle;
         }
       }

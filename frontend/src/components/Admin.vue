@@ -3,6 +3,7 @@
     <el-header height="0"> </el-header>
     <el-divider style="margin: 0" />
     <el-table
+      @selection-change="handleSelectionChange"
       :data="
         tableData.filter(
           (data) =>
@@ -12,7 +13,24 @@
       stripe
       style="width: 100%"
     >
+      <el-table-column type="selection" width="30"></el-table-column>
+      <el-table-column width="100">
+        <template #header>
+          <el-popconfirm
+            style="margin: 10px"
+            confirm-button-text="Yes"
+            cancel-button-text="No"
+            title="Sure to delete?"
+            @confirm="onDelete"
+          >
+            <template #reference>
+              <el-button type="danger" size="small">Delete</el-button>
+            </template>
+          </el-popconfirm>
+        </template></el-table-column
+      >
       <el-table-column label="User" align="center">
+        <template #header> User </template>
         <template #default="scope">
           <el-link @click="this.$router.push(`/user/${scope.row.name}`)">
             {{ scope.row.name }}
@@ -64,12 +82,12 @@
           >
         </template>
       </el-table-column>
-      <el-table-column label="Operation" width="180px" align="center">
+      <el-table-column label="Operation" width="150px" align="center">
         <template #header>
           <el-input
             v-model="search"
             size="small"
-            placeholder="Type to search"
+            placeholder="Type to Search"
           />
         </template>
         <template #default="scope">
@@ -79,16 +97,6 @@
             @click="this.$router.push(`/settings/${scope.row.name}`)"
             >Edit</el-button
           >
-          <el-popconfirm
-            confirm-button-text="Yes"
-            cancel-button-text="No"
-            title="Sure to delete?"
-            @confirm="onDelete(scope.row.id)"
-          >
-            <template #reference>
-              <el-button type="danger" size="small">Delete</el-button>
-            </template>
-          </el-popconfirm>
         </template>
       </el-table-column>
     </el-table>
@@ -103,6 +111,7 @@ export default {
     return {
       search: "",
       tableData: [],
+      selectUsers: [],
     };
   },
   methods: {
@@ -113,12 +122,12 @@ export default {
         this.tableData = result;
       });
     },
-    async onDelete(userId) {
+    async onDelete() {
       await post(
         "/api/user/delete",
         {
           auth: this.$cookies.get("token"),
-          userId,
+          users: this.selectUsers.map((item) => item.id),
         },
         (result) => {
           this.$message.success({
@@ -128,6 +137,9 @@ export default {
         }
       );
       this.getTableData();
+    },
+    handleSelectionChange(value) {
+      this.selectUsers = value;
     },
   },
   async created() {

@@ -176,7 +176,6 @@ router.post("/import", async (req, res) => {
     res.json(error(`Data is not in the correct format.`));
     return;
   }
-  console.log(req.body.data);
   const successfulRow = [];
   const failedRow = [];
   for (const row of req.body.data) {
@@ -198,7 +197,6 @@ router.post("/import", async (req, res) => {
       failedRow.push(row.name);
     }
   }
-  refreshAll();
   res.json(
     result(`Successful/Failed: ${successfulRow.length}/${failedRow.length}
 						Successful: ${successfulRow}
@@ -229,12 +227,13 @@ router.post("/delete", async (req, res) => {
       res.json(error(`Authorization error.`));
       return;
     }
-    const userId = req.body.userId;
-    await query(`DELETE FROM user WHERE id = ${userId};`);
-    await query(`DELETE FROM user_daily_status WHERE user_id = ${userId};`);
-    await query(`DELETE FROM submission WHERE user_id = ${userId};`);
-    await query(`DELETE FROM user_list WHERE user_id = ${userId};`);
-    await query(`DELETE FROM list_user WHERE user_id = ${userId};`);
+    for (const userId of req.body.users) {
+      await query(`DELETE FROM user WHERE id = ${userId};`);
+      await query(`DELETE FROM user_daily_status WHERE user_id = ${userId};`);
+      await query(`DELETE FROM submission WHERE user_id = ${userId};`);
+      await query(`DELETE FROM user_list WHERE user_id = ${userId};`);
+      await query(`DELETE FROM list_user WHERE user_id = ${userId};`);
+    }
     res.json(result(`Delete successfully!`));
   } catch (err) {
     console.error(err);

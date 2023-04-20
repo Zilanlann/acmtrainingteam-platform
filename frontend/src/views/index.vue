@@ -18,12 +18,23 @@
         v-if="userId"
         style="float: right; margin-top: 14px"
         @click="signOut"
-        >Sign Out</el-button
+        >Sign Out
+      </el-button>
+      <el-button
+        v-if="$cookies.get('token')?.id === 9999"
+        style="float: right; margin-top: 14px; margin-right: 20px"
+        type="primary"
+        @click="refreshData"
+        :loading="refreshLoading"
       >
+        Refresh data
+        <el-icon :size="18"><Refresh /></el-icon>
+      </el-button>
       <el-button
         v-else
         style="float: right; margin-top: 14px"
         @click="gotoSignIn"
+        type="primary"
         >Sign In</el-button
       >
     </el-header>
@@ -118,6 +129,8 @@
 </template>
 
 <script>
+import { post } from "@/logic/dataGetting";
+
 export default {
   data() {
     return {
@@ -127,6 +140,7 @@ export default {
       cookie: this.$cookies.get("token"),
       userName: "",
       userId: 0,
+      refreshLoading: false,
     };
   },
   methods: {
@@ -153,6 +167,21 @@ export default {
     },
     refreshMenu() {
       this.menuKey++;
+    },
+    refreshData() {
+      post("/api/user/refresh", null, (result) => {
+        this.$message({
+          message: result,
+          duration: 8000,
+        });
+      });
+      this.refreshLoading = true;
+      setTimeout(() => {
+        this.$message({
+          message: "Refresh has finished.",
+        });
+        this.refreshLoading = false;
+      }, 200000);
     },
   },
   async created() {

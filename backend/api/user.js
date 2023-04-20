@@ -242,4 +242,16 @@ router.post("/delete", async (req, res) => {
   }
 });
 
+// $route  POST api/user/refresh
+// @access public
+router.post("/refresh", async (req, res) => {
+  try {
+    refreshAll();
+    res.json(result("Refreshing, it will take about 3 minutes, please do not request repeatedly."));
+  } catch (err) {
+    console.error(err);
+    res.json(error(err));
+  }
+});
+
 export default router;

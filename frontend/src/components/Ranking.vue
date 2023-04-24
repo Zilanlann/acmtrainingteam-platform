@@ -178,7 +178,7 @@ export default {
   data() {
     return {
       page: 1,
-      size: 15,
+      size: 30,
       tableData: [],
       filter: [],
       order: {
@@ -220,6 +220,9 @@ export default {
           this.tableData = result;
         }
       );
+      this.$cookies.set("order", this.order);
+      this.$cookies.set("size", this.size);
+      this.$cookies.set("page", this.page);
     },
     getList() {
       post(
@@ -241,10 +244,19 @@ export default {
     },
   },
   async created() {
-    this.getRanking();
     if (this.$cookies.get("token")?.id) {
       this.getList();
     }
+    if (this.$cookies.get("order")) {
+      this.order = this.$cookies.get("order");
+    }
+    if (this.$cookies.get("size")) {
+      this.size = parseInt(this.$cookies.get("size"));
+    }
+    if (this.$cookies.get("page")) {
+      this.page = parseInt(this.$cookies.get("page"));
+    }
+    this.getRanking();
   },
 };
 </script>

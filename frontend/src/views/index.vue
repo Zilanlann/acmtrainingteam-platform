@@ -21,6 +21,13 @@
         >Sign Out
       </el-button>
       <el-button
+        v-else
+        style="float: right; margin-top: 14px"
+        @click="gotoSignIn"
+        type="primary"
+        >Sign In</el-button
+      >
+      <el-button
         v-if="$cookies.get('token')?.id === 9999"
         style="float: right; margin-top: 14px; margin-right: 20px"
         type="primary"
@@ -30,13 +37,6 @@
         Refresh data
         <el-icon :size="18"><Refresh /></el-icon>
       </el-button>
-      <el-button
-        v-else
-        style="float: right; margin-top: 14px"
-        @click="gotoSignIn"
-        type="primary"
-        >Sign In</el-button
-      >
     </el-header>
     <el-container style="height: calc(100% - 60px)">
       <el-aside :width="asideWidth" style="transition: width 0.5s">

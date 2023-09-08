@@ -23,7 +23,7 @@ VMdPreview.use(vuepressTheme, {
 });
 
 const postIndex = window.location.host.indexOf(":");
-const hostOutOfPost = window.location.host.substring(0, postIndex);
+const hostOutOfPost = postIndex === -1 ? window.location.host : window.location.host.substring(0, postIndex);
 axios.defaults.baseURL = `${window.location.protocol}//${hostOutOfPost}:5000/`;
 
 const app = createApp(App);

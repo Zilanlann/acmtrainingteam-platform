@@ -1,4 +1,5 @@
 import fetch from "node-fetch";
+import getProxyAgent from "./proxy/getProxyAgent.js";
 
 export default class Avatar {
   static async getLeetcodeUserAvatar(userName) {
@@ -11,6 +12,7 @@ export default class Avatar {
 				}
 			}`,
       variables: { userSlug: userName },
+      agent: getProxyAgent()
     });
     const requestOptions = {
       method: "POST",
@@ -33,8 +35,8 @@ export default class Avatar {
 
   static async getCodeforcesUserAvatar(handle) {
     const url = `https://codeforces.com/api/user.info?handles=${handle}`;
-		const response = await fetch(url);
-		const result = await response.json();
+    const response = await fetch(url, { agent: getProxyAgent() });
+    const result = await response.json();
     if (result.status === "OK") {
       return result?.result[0]?.avatar?.substring(31);
     } else {

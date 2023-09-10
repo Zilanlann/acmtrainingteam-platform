@@ -1,4 +1,5 @@
 import fetch from "node-fetch";
+import getProxyAgent from "./proxy/getProxyAgent.js";
 
 // Package API(s) of one user of LeetCode
 // Usage:
@@ -26,6 +27,7 @@ export default class LeetCodeUser {
       method: "POST",
       headers: { "content-type": "application/json" },
       body: graphql,
+      agent: getProxyAgent()
     };
     const response = await fetch("https://leetcode.cn/graphql/", requestOptions);
     const result = await response.json();

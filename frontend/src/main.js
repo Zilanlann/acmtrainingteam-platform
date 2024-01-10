@@ -16,15 +16,15 @@ import "@kangc/v-md-editor/lib/theme/style/vuepress.css";
 import Prism from "prismjs";
 import hljs from "highlight.js";
 VueMarkdownEditor.use(vuepressTheme, {
-  Prism,
+    Prism,
 });
 VMdPreview.use(vuepressTheme, {
-  Hljs: hljs,
+    Hljs: hljs,
 });
 
 const postIndex = window.location.host.indexOf(":");
 const hostOutOfPost = postIndex === -1 ? window.location.host : window.location.host.substring(0, postIndex);
-axios.defaults.baseURL = `${window.location.protocol}//${hostOutOfPost}:5000/`;
+axios.defaults.baseURL = `${window.location.protocol}//xcpc-backend.chrisann.top/`;
 
 const app = createApp(App);
 app.use(ElementPlus).use(router).mount("#app");
@@ -33,5 +33,5 @@ app.use(VueMarkdownEditor);
 app.use(VMdPreview);
 
 for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
-  app.component(key, component);
+    app.component(key, component);
 }
